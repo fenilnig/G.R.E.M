@@ -183,7 +183,7 @@ body = body.union(front_txt)
 export(body, "grem_body")
 export(plate, "grem_top_plate")
 export(k_small, "grem_knob_small_x4")
-export(k_big, "grem_knob_large_x1")
+export(k_big, "grem_knob_large_x1_simple")   # plain-cylinder stand-in used by the assembly; the printable knurled knob is grem_knob_knurled.py
 export(tile, "grem_test_tile")
 export(stubs, "grem_test_knob_stubs")
 
