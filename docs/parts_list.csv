@@ -1,0 +1,40 @@
+﻿Group,No,Part,Qty,Status,Size / price,Notes
+Power,1,18650 Li-ion cell,×1,have,Ø18 × 65 mm,Lies in the holder on the rear-left floor.
+Power,2,18650 battery holder,×1,have,76.6 mm long (measured); pocket 79 × 26 mm,"Foam-taped to the floor, rear left, with a zip tie through two floor slots. The red and black leads leave from the two ends and run to the TP4056 and the rocker. Your cell is a 2000 mAh 7.4 Wh blue 18650."
+Power,3,TP4056 USB-C charger board,×1,have,26.8 × 17 mm,"Rear-right floor, turned so its USB-C port faces a 12 × 6 mm cutout in the rear wall, so you can charge with the lid closed. This is the protected version (DW01 and 8205 chips fitted). Battery wires go on B+ and B−, the rocker and boost converter on OUT+ and OUT−."
+Power,4,XL6009 boost converter (5.0 V),×1,have,43 × 21 mm (measured length),"Right-hand floor strip, held in a low printed pocket 21.4 × 43.4 mm plus foam tape. Set the trimmer to 5.0 V on the bench before it touches the ESP32 5V pin."
+Power,5,MT3608 boost converter (spare),×1,cart,Robu ₹39,Backup if the XL6009 sags at low battery. Not mounted.
+Power,6,"Rocker power switch (KCD1, 6 A 250 V)",×1,have,cutout 21 × 15 mm,"Right wall. Sits in series between the TP4056 output and the boost converter. Snap-in clips need a wall about 1.8 mm thick, so the wall is thinned around the cutout. Needs about 20 mm of depth behind it. Solder wires to its two blade terminals and cover with heat shrink."
+Brain & I/O,7,ESP32-S3-DevKitC-1 N16R8,×1,have,63.1 × 28 mm (clone),"Plugged into female headers on the main board (solder male pins on first, none fitted yet). Its two USB-C ports face a 24 × 8 mm cutout in the left wall, about 1 mm away. Use the port marked USB for programming and keyboard mode. Keep wires clear of the antenna trace at the top end."
+Brain & I/O,8,MCP23017 I/O expander breakout,×1,cart,"Robocraze ₹486 · breakout board, size to be measured","Main board, front left. The CAD reserves about 40 × 25 mm for it until it arrives. Reads the 9 keys and 5 encoder buttons over I²C, address 0x20."
+Brain & I/O,9,DRV2605L haptic driver (Adafruit 2305),×1,cart,Fab.to.Lab ₹954,"Main board, front right. I²C address 0x5A, drives the coin motor."
+Brain & I/O,10,Coin vibration motor,×1,have,Ø10 × 3 mm,"Foam-taped to the underside of the lid, beside the haptic dial, so clicks travel into the plate."
+Brain & I/O,11,"3.12 in SSD1322 OLED, 256 × 64",×1,have,board 100.5 × 33.5 mm · window 81 × 23 mm,"Under the lid at the rear. Four M3 bolts (holes 95 × 28.5 mm apart, from the maker drawing) screw into inserts in 2.8 mm bosses under the plate. The 16-pin header is at the right end and needs 9 mm of depth behind the board. Wired as 4-wire SPI."
+Controls,12,MX key switches,×9,have,14 × 14 mm cutouts,"Clip into the plate in a 3 × 3 grid, 19.05 mm pitch."
+Controls,13,Keycaps,×9,have,18 × 18 mm,"One light-coloured cap, top-right, for record or mark."
+Controls,14,KY-040 encoder modules,×5,cart,Robu ₹345 for 5,"Under the lid, one under each knob, shaft through a 7 mm hole. Board is 26.2 × 18.6 mm with the shaft 9.3 mm from the left edge, header end facing right, so neighbours clear by 2.8 mm. You own 1, so you end with 6 and one spare."
+Controls,15,Small dial knobs,×4,print,Ø24 mm,Row of four above the keys. Print in black PLA.
+Controls,16,Haptic dial knob,×1,print,Ø38 mm,Right of the keys. Largest control on the deck.
+Enclosure,17,Top plate,×1,print,"140 × 130 mm, 3 mm","Sloped 14.7°. Holds the keys, dials and OLED, and carries the four lid screws."
+Enclosure,18,"Body (floor, three walls, corner posts)",×1,print,140 × 126 mm,"Rear wall 65 mm, front wall 32 mm. Carries the nameplate band and the four corner posts."
+Enclosure,19,Rubber feet,×4,cart,Amazon ₹199 for 18,Under the four corners of the floor.
+Fasteners,20,M3 × 8 heat-set inserts,×25,cart,Robu ₹104,"8 used: four on the corner posts for the lid screws, four under the plate for the OLED bolts."
+Fasteners,21,"M3 female-female standoffs, 5 mm",×24,cart,Robu ₹184,Four lift the main board off the floor.
+Fasteners,22,M3 × 6 bolt set,×1,cart,Robu ₹67,"Four hold the OLED board to its bosses (drawn as dark screw heads on its back). More hold the main board to its standoffs, not drawn."
+Fasteners,23,M3 × 8 bolt set,×1,cart,Robu ₹78,"Four lid screws, one per corner."
+Small parts,24,100 nF ceramic capacitors (marked 104),×10,have,,"Debounce caps, one across each switch or encoder line near the MCP23017."
+Small parts,25,Electrolytic capacitor 470 µF / 1000 µF,×1,have,,Across the 5 V rail next to the boost converter. Stripe is negative.
+Small parts,26,10 kΩ resistors,×10,have,,Pull-ups and pull-downs on the main board.
+Boards & wiring,27,Perfboard 10 × 10 cm (main),×1,have,100 × 70 mm used,"Trim to about 100 × 70 mm. It carries the ESP32, MCP23017, DRV2605L and passives."
+Boards & wiring,28,Perfboards 10 × 15 cm and 5 × 7 cm,×2,have,,Spares. Not mounted.
+Boards & wiring,29,Pin headers and sockets,×1,have,,"Female sockets under the ESP32 and the breakout boards, so every module can be swapped."
+Boards & wiring,30,Jumper wires,×1,have,,For breadboarding every stage before you solder it.
+Boards & wiring,31,28 AWG silicone wire,×3,cart,Robu ₹12 each,"Final point-to-point wiring, shown as the coloured lines in the model."
+Boards & wiring,32,Heat-shrink kit,×1,cart,Robu ₹359,Insulates every solder joint on the battery and 5 V lines.
+Boards & wiring,33,"Zip ties, 100 × 2.5 mm",×100,cart,Amazon ₹139,Bundle the wires from the lid to the main board. Not drawn.
+Boards & wiring,34,"Foam tape, 12 mm × 7 m",×1,cart,Amazon ₹216,"Pads under the holder, TP4056 and XL6009 (white pads), and under the coin motor."
+Boards & wiring,35,"Kapton tape, 10 mm × 33 m",×1,cart,Robocraze ₹219,Insulation between boards and metal parts. Not drawn.
+Consumables,36,"Solder wire, 0.8 mm",×1,cart,Robocraze ₹269,For every joint.
+Consumables,37,Soldering flux paste,×1,cart,Robocraze ₹19,Helps the solder flow on perfboard pads.
+Consumables,38,USB-C data cable,×1,cart,Robocraze ₹74,Must carry data. Charge-only cables will not program the ESP32.
+Consumables,39,Black PLA filament,×1,have,,"For the top plate, body and all five knobs."

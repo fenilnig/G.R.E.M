@@ -1,0 +1,547 @@
+<title>G.R.E.M. 3D Blueprint</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+/* Layout: one 3D stage with a numbered parts register beside it; stacks on phones. */
+:root{
+  --bg:#ecebe6; --panel:#f8f7f3; --line:#d3d1c9; --fg:#16181a; --muted:#5f6366;
+  --accent:#c2570a; --accent-ink:#ffffff; --have:#1f7a4d; --cart:#8a6500; --print:#2c5fc4;
+  --stage-a:#f6f5f1; --stage-b:#dcdad2;
+  --f-display:'Barlow Condensed','Arial Narrow',sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --f-body:'IBM Plex Sans',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b0c0d; --panel:#131516; --line:#272a2c; --fg:#e7e7e3; --muted:#8c9194;
+    --accent:#ff8a24; --accent-ink:#1a0e02; --have:#63c692; --cart:#e2b640; --print:#7fa9ff;
+    --stage-a:#1b1d1f; --stage-b:#0c0d0e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b0c0d; --panel:#131516; --line:#272a2c; --fg:#e7e7e3; --muted:#8c9194;
+  --accent:#ff8a24; --accent-ink:#1a0e02; --have:#63c692; --cart:#e2b640; --print:#7fa9ff;
+  --stage-a:#1b1d1f; --stage-b:#0c0d0e; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:14px;line-height:1.5;
+  padding-block:20px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1360px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header{display:flex;flex-wrap:wrap;gap:6px 24px;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:12px}
+h1{margin:0;font-family:var(--f-display);font-weight:700;font-size:clamp(30px,5vw,46px);letter-spacing:.5px;line-height:1;text-wrap:balance}
+.sub{font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.6px}
+main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(320px,1fr);gap:16px;align-items:start}
+@media (max-width:900px){main{grid-template-columns:minmax(0,1fr)}}
+.stagecol{display:flex;flex-direction:column;gap:10px;min-width:0}
+#stage{position:relative;width:100%;aspect-ratio:4/3;min-height:340px;max-height:78vh;border:1px solid var(--line);
+  background:radial-gradient(120% 90% at 50% 20%,var(--stage-a),var(--stage-b));overflow:hidden;touch-action:none;cursor:grab}
+#stage.drag{cursor:grabbing}
+#stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#labels{position:absolute;inset:0;pointer-events:none}
+.mk{position:absolute;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--panel);
+  border:1.5px solid var(--accent);color:var(--fg);font:600 11px/19px var(--f-mono);text-align:center;pointer-events:auto;cursor:pointer;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--bg) 70%,transparent)}
+.mk.on{background:var(--accent);color:var(--accent-ink);transform-origin:center}
+#hud{position:absolute;left:10px;bottom:8px;font:11px/1.5 var(--f-mono);color:var(--muted);pointer-events:none;letter-spacing:.4px}
+#nogl{position:absolute;inset:0;display:none;align-items:center;justify-content:center;padding:24px;text-align:center;color:var(--muted)}
+.bar{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);background:var(--panel)}
+.seg button,.chips button{font:500 12px var(--f-mono);letter-spacing:.4px;color:var(--muted);background:transparent;border:0;padding:7px 11px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"],.chips button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+button:focus-visible,.row:focus-visible,.mk:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tog{display:inline-flex;gap:6px;align-items:center;font:12px var(--f-mono);color:var(--muted);cursor:pointer}
+.tog input{accent-color:var(--accent);margin:0}
+.lbl{font:600 11px var(--f-mono);letter-spacing:1.2px;color:var(--muted);text-transform:uppercase}
+aside{display:flex;flex-direction:column;gap:12px;min-width:0}
+#detail{border:1px solid var(--line);background:var(--panel);padding:14px;display:flex;flex-direction:column;gap:6px;min-height:150px}
+#detail .n{font:600 12px var(--f-mono);color:var(--accent);letter-spacing:1px}
+#detail h2{margin:0;font:700 24px/1.1 var(--f-display);letter-spacing:.3px}
+#detail p{margin:0;max-width:62ch}
+#detail .meta{display:flex;flex-wrap:wrap;gap:4px 14px;font:12px var(--f-mono);color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;border:1px solid var(--line);background:var(--panel);align-self:flex-start}
+.chips button+button{border-left:1px solid var(--line)}
+#list{border:1px solid var(--line);background:var(--panel);max-height:62vh;overflow:auto}
+.cat{position:sticky;top:0;background:var(--panel);font:600 11px var(--f-mono);letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);
+  padding:8px 12px;border-bottom:1px solid var(--line);z-index:1}
+.row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:2px 10px;align-items:baseline;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.row:hover{background:color-mix(in srgb,var(--fg) 5%,transparent)}
+.row[aria-selected="true"]{background:color-mix(in srgb,var(--accent) 14%,transparent);box-shadow:inset 3px 0 0 var(--accent)}
+.row .no{font:600 12px var(--f-mono);color:var(--accent);font-variant-numeric:tabular-nums}
+.row .nm{min-width:0;overflow-wrap:anywhere}
+.row .nm small{display:block;color:var(--muted);font:11px var(--f-mono)}
+.st{font:600 10px var(--f-mono);letter-spacing:.8px;text-transform:uppercase;padding:2px 6px;border:1px solid currentColor;white-space:nowrap}
+.st.have{color:var(--have)} .st.cart{color:var(--cart)} .st.print{color:var(--print)}
+.foot{font:12px/1.6 var(--f-mono);color:var(--muted);max-width:110ch}
+.foot b{color:var(--fg);font-weight:600}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>G.R.E.M. · 3D Blueprint</h1>
+    <div class="sub">140 × 126 mm footprint · 65 mm rear · 32 mm front · top plate slopes 14.7° · 39 numbered parts</div>
+  </header>
+  <main>
+    <div class="stagecol">
+      <div id="stage" role="img" aria-label="Interactive 3D model of the G.R.E.M. console with numbered parts. Drag to rotate, scroll to zoom.">
+        <div id="labels"></div>
+        <div id="hud">drag to rotate · scroll or pinch to zoom · click a number</div>
+        <div id="nogl">3D view needs WebGL. Open this page in a current desktop or phone browser.</div>
+      </div>
+      <div class="bar">
+        <div class="seg" id="modeSeg" aria-label="Assembly state">
+          <button data-m="0" aria-pressed="true">Assembled</button>
+          <button data-m="1" aria-pressed="false">Lid lifted</button>
+          <button data-m="2" aria-pressed="false">Exploded</button>
+        </div>
+        <div class="seg" id="viewSeg" aria-label="Camera view">
+          <button data-v="iso" aria-pressed="true">Iso</button>
+          <button data-v="top" aria-pressed="false">Top</button>
+          <button data-v="front" aria-pressed="false">Front</button>
+          <button data-v="side" aria-pressed="false">Side</button>
+          <button data-v="rear" aria-pressed="false">Rear</button>
+        </div>
+        <label class="tog"><input type="checkbox" id="tXray"> X-ray shell</label>
+        <label class="tog"><input type="checkbox" id="tWire" checked> Wiring</label>
+        <label class="tog"><input type="checkbox" id="tLbl" checked> Numbers</label>
+      </div>
+      <p class="foot"><b>Layout rule:</b> keys, four dials, haptic dial and OLED hang from the sloped lid. Power parts sit on the floor at the tall rear. The 10 × 10 cm board carries the ESP32-S3, MCP23017 and DRV2605L in the middle, where the lid is high enough to clear them. The OLED and KY-040 sizes come from the makers' drawings. The MCP23017, DRV2605L, TP4056, XL6009, ESP32 and rocker sizes are still estimates.</p>
+    </div>
+    <aside>
+      <div id="detail" aria-live="polite"></div>
+      <div class="chips" id="filter" aria-label="Filter parts">
+        <button data-f="all" aria-pressed="true">All 39</button>
+        <button data-f="have" aria-pressed="false">Have</button>
+        <button data-f="cart" aria-pressed="false">In cart</button>
+        <button data-f="print" aria-pressed="false">Print</button>
+      </div>
+      <div id="list" role="listbox" aria-label="Numbered parts list"></div>
+      <p class="foot">Not numbered: soldering iron, multimeter, strippers, cutters, tweezers, desoldering braid, and the XT60 plugs and LM2596 buck board (rover parts).</p>
+    </aside>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+/* ---------- parts register ---------- */
+var PARTS=[
+ ['Power',1,'18650 Li-ion cell','×1','have','Ø18 × 65 mm','Lies in the holder on the rear-left floor.'],
+ ['Power',2,'18650 battery holder','×1','have','76.6 mm long (measured); pocket 79 × 26 mm','Foam-taped to the floor, rear left, with a zip tie through two floor slots. The red and black leads leave from the two ends and run to the TP4056 and the rocker. Your cell is a 2000 mAh 7.4 Wh blue 18650.'],
+ ['Power',3,'TP4056 USB-C charger board','×1','have','26.8 × 17 mm','Rear-right floor, turned so its USB-C port faces a 12 × 6 mm cutout in the rear wall, so you can charge with the lid closed. This is the protected version (DW01 and 8205 chips fitted). Battery wires go on B+ and B−, the rocker and boost converter on OUT+ and OUT−.'],
+ ['Power',4,'XL6009 boost converter (5.0 V)','×1','have','43 × 21 mm (measured length)','Right-hand floor strip, held in a low printed pocket 21.4 × 43.4 mm plus foam tape. Set the trimmer to 5.0 V on the bench before it touches the ESP32 5V pin.'],
+ ['Power',5,'MT3608 boost converter (spare)','×1','cart','Robu ₹39','Backup if the XL6009 sags at low battery. Not mounted.'],
+ ['Power',6,'Rocker power switch (KCD1, 6 A 250 V)','×1','have','cutout 21 × 15 mm','Right wall. Sits in series between the TP4056 output and the boost converter. Snap-in clips need a wall about 1.8 mm thick, so the wall is thinned around the cutout. Needs about 20 mm of depth behind it. Solder wires to its two blade terminals and cover with heat shrink.'],
+ ['Brain & I/O',7,'ESP32-S3-DevKitC-1 N16R8','×1','have','63.1 × 28 mm (clone)','Plugged into female headers on the main board (solder male pins on first, none fitted yet). Its two USB-C ports face a 24 × 8 mm cutout in the left wall, about 1 mm away. Use the port marked USB for programming and keyboard mode. Keep wires clear of the antenna trace at the top end.'],
+ ['Brain & I/O',8,'MCP23017 I/O expander breakout','×1','cart','Robocraze ₹486 · breakout board, size to be measured','Main board, front left. The CAD reserves about 40 × 25 mm for it until it arrives. Reads the 9 keys and 5 encoder buttons over I²C, address 0x20.'],
+ ['Brain & I/O',9,'DRV2605L haptic driver (Adafruit 2305)','×1','cart','Fab.to.Lab ₹954','Main board, front right. I²C address 0x5A, drives the coin motor.'],
+ ['Brain & I/O',10,'Coin vibration motor','×1','have','Ø10 × 3 mm','Foam-taped to the underside of the lid, beside the haptic dial, so clicks travel into the plate.'],
+ ['Brain & I/O',11,'3.12 in SSD1322 OLED, 256 × 64','×1','have','board 100.5 × 33.5 mm · window 81 × 23 mm','Under the lid at the rear. Four M3 bolts (holes 95 × 28.5 mm apart, from the maker drawing) screw into inserts in 2.8 mm bosses under the plate. The 16-pin header is at the right end and needs 9 mm of depth behind the board. Wired as 4-wire SPI.'],
+ ['Controls',12,'MX key switches','×9','have','14 × 14 mm cutouts','Clip into the plate in a 3 × 3 grid, 19.05 mm pitch.'],
+ ['Controls',13,'Keycaps','×9','have','18 × 18 mm','One light-coloured cap, top-right, for record or mark.'],
+ ['Controls',14,'KY-040 encoder modules','×5','cart','Robu ₹345 for 5','Under the lid, one under each knob, shaft through a 7 mm hole. Board is 26.2 × 18.6 mm with the shaft 9.3 mm from the left edge, header end facing right, so neighbours clear by 2.8 mm. You own 1, so you end with 6 and one spare.'],
+ ['Controls',15,'Small dial knobs','×4','print','Ø24 mm','Row of four above the keys. Print in black PLA.'],
+ ['Controls',16,'Haptic dial knob','×1','print','Ø38 mm','Right of the keys. Largest control on the deck.'],
+ ['Enclosure',17,'Top plate','×1','print','140 × 130 mm, 3 mm','Sloped 14.7°. Holds the keys, dials and OLED, and carries the four lid screws.'],
+ ['Enclosure',18,'Body (floor, three walls, corner posts)','×1','print','140 × 126 mm','Rear wall 65 mm, front wall 32 mm. Carries the nameplate band and the four corner posts.'],
+ ['Enclosure',19,'Rubber feet','×4','cart','Amazon ₹199 for 18','Under the four corners of the floor.'],
+ ['Fasteners',20,'M3 × 8 heat-set inserts','×25','cart','Robu ₹104','8 used: four on the corner posts for the lid screws, four under the plate for the OLED bolts.'],
+ ['Fasteners',21,'M3 female-female standoffs, 5 mm','×24','cart','Robu ₹184','Four lift the main board off the floor.'],
+ ['Fasteners',22,'M3 × 6 bolt set','×1','cart','Robu ₹67','Four hold the OLED board to its bosses (drawn as dark screw heads on its back). More hold the main board to its standoffs, not drawn.'],
+ ['Fasteners',23,'M3 × 8 bolt set','×1','cart','Robu ₹78','Four lid screws, one per corner.'],
+ ['Small parts',24,'100 nF ceramic capacitors (marked 104)','×10','have','','Debounce caps, one across each switch or encoder line near the MCP23017.'],
+ ['Small parts',25,'Electrolytic capacitor 470 µF / 1000 µF','×1','have','','Across the 5 V rail next to the boost converter. Stripe is negative.'],
+ ['Small parts',26,'10 kΩ resistors','×10','have','','Pull-ups and pull-downs on the main board.'],
+ ['Boards & wiring',27,'Perfboard 10 × 10 cm (main)','×1','have','100 × 70 mm used','Trim to about 100 × 70 mm. It carries the ESP32, MCP23017, DRV2605L and passives.'],
+ ['Boards & wiring',28,'Perfboards 10 × 15 cm and 5 × 7 cm','×2','have','','Spares. Not mounted.'],
+ ['Boards & wiring',29,'Pin headers and sockets','×1','have','','Female sockets under the ESP32 and the breakout boards, so every module can be swapped.'],
+ ['Boards & wiring',30,'Jumper wires','×1','have','','For breadboarding every stage before you solder it.'],
+ ['Boards & wiring',31,'28 AWG silicone wire','×3','cart','Robu ₹12 each','Final point-to-point wiring, shown as the coloured lines in the model.'],
+ ['Boards & wiring',32,'Heat-shrink kit','×1','cart','Robu ₹359','Insulates every solder joint on the battery and 5 V lines.'],
+ ['Boards & wiring',33,'Zip ties, 100 × 2.5 mm','×100','cart','Amazon ₹139','Bundle the wires from the lid to the main board. Not drawn.'],
+ ['Boards & wiring',34,'Foam tape, 12 mm × 7 m','×1','cart','Amazon ₹216','Pads under the holder, TP4056 and XL6009 (white pads), and under the coin motor.'],
+ ['Boards & wiring',35,'Kapton tape, 10 mm × 33 m','×1','cart','Robocraze ₹219','Insulation between boards and metal parts. Not drawn.'],
+ ['Consumables',36,'Solder wire, 0.8 mm','×1','cart','Robocraze ₹269','For every joint.'],
+ ['Consumables',37,'Soldering flux paste','×1','cart','Robocraze ₹19','Helps the solder flow on perfboard pads.'],
+ ['Consumables',38,'USB-C data cable','×1','cart','Robocraze ₹74','Must carry data. Charge-only cables will not program the ESP32.'],
+ ['Consumables',39,'Black PLA filament','×1','have','','For the top plate, body and all five knobs.']
+];
+var MODEL={};[1,2,3,4,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,29,31,34].forEach(function(n){MODEL[n]=1});
+var ST={have:'Have',cart:'In cart',print:'Print'};
+
+/* ---------- three.js scene ---------- */
+var stage=document.getElementById('stage'),labelsEl=document.getElementById('labels');
+if(!window.THREE){document.getElementById('nogl').style.display='flex';return;}
+var renderer;
+try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});}catch(e){document.getElementById('nogl').style.display='flex';return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+stage.insertBefore(renderer.domElement,labelsEl);
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(30,1,1,3000);
+scene.add(new THREE.HemisphereLight(0xffffff,0x3a3a44,0.95));
+var dl=new THREE.DirectionalLight(0xffffff,0.85);dl.position.set(140,230,170);scene.add(dl);
+var dl2=new THREE.DirectionalLight(0xffffff,0.35);dl2.position.set(-160,90,-130);scene.add(dl2);
+
+var T=Math.atan(33/126),cT=Math.cos(T);
+function hAt(v){return 65-33*v/126;}      /* top-surface height at plan depth v (0 rear .. 126 front) */
+function lx(u){return u-70;}
+function lz(v){return (v-63)/cT;}          /* plan depth -> distance along the sloped lid */
+function wz(v){return v-63;}               /* plan depth -> world z */
+
+var REG={}, pickables=[];
+function tag(o,id,off){o.userData.pid=id;(REG[id]=REG[id]||{objs:[],off:off||[0,0,0]}).objs.push(o);return o;}
+function mat(c,r,m){return new THREE.MeshStandardMaterial({color:c,roughness:r==null?0.6:r,metalness:m||0,emissive:0x000000});}
+function box(w,h,d,c,r,m){return new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(c,r,m));}
+function cyl(rt,rb,h,c,r,m,seg){return new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||28),mat(c,r,m));}
+function at(o,x,y,z){o.position.set(x,y,z);return o;}
+function grp(){return new THREE.Group();}
+
+var world=grp();scene.add(world);
+var shellMats=[];
+function shellMat(c){var m=mat(c,0.78,0);m.transparent=true;m.opacity=1;shellMats.push(m);return m;}
+
+/* shell */
+var shell=grp();world.add(shell);
+function shellPiece(g,c){var m=new THREE.Mesh(g,shellMat(c));return m;}
+var base=at(shellPiece(new THREE.BoxGeometry(140,3,126),0x17181b),0,1.5,0);shell.add(tag(base,18,[45,12.5,64]));
+var rear=at(shellPiece(new THREE.BoxGeometry(140,65,3),0x17181b),0,32.5,-61.5);shell.add(tag(rear,18));
+var front=at(shellPiece(new THREE.BoxGeometry(140,32,3),0x17181b),0,16,61.5);shell.add(tag(front,18));
+function sideWall(x0){
+  var s=new THREE.Shape();s.moveTo(63,0);s.lineTo(-63,0);s.lineTo(-63,32);s.lineTo(63,65);s.lineTo(63,0);
+  var g=new THREE.ExtrudeGeometry(s,{depth:3,bevelEnabled:false});g.rotateY(Math.PI/2);g.translate(x0,0,0);
+  return shellPiece(g,0x1d1e22);
+}
+shell.add(tag(sideWall(-70),18));shell.add(tag(sideWall(67),18));
+/* corner posts + inserts */
+var postPos=[[6,6],[134,6],[6,120],[134,120]];
+postPos.forEach(function(p){
+  var top=hAt(p[1])-3, h=top-3;
+  var post=at(shellPiece(new THREE.CylinderGeometry(3.6,3.6,h,24),0x24262b),lx(p[0])*0.92,3+h/2,wz(p[1]));
+  shell.add(tag(post,18));
+  var ins=at(cyl(2.5,2.5,4,0xc9a24a,0.35,0.8),lx(p[0])*0.92,top-2,wz(p[1]));shell.add(tag(ins,20));
+});
+/* nameplate band on the front wall */
+function nameTex(){
+  var c=document.createElement('canvas');c.width=1024;c.height=128;var g=c.getContext('2d');
+  g.fillStyle='#17181b';g.fillRect(0,0,1024,128);
+  g.fillStyle='#d0d0d0';g.fillRect(0,78,1024,9);g.fillStyle='#8a8a8d';g.fillRect(0,92,1024,9);g.fillStyle='#59595c';g.fillRect(0,106,1024,9);
+  g.fillStyle='#e2e2e2';g.font='700 40px "Barlow Condensed",Arial Narrow,sans-serif';g.textBaseline='alphabetic';
+  g.font='700 64px "Barlow Condensed",Arial Narrow,sans-serif';g.fillText('G.R.E.M.',34,66);
+  g.font='500 20px "IBM Plex Mono",monospace';g.fillStyle='#8a8a8d';g.textAlign='right';g.fillText('',990,56);
+  var t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;
+}
+var np=new THREE.Mesh(new THREE.PlaneGeometry(130,16.25),new THREE.MeshBasicMaterial({map:nameTex()}));
+np.position.set(0,15,63.05);shell.add(np);
+/* wall cutout marks */
+function mark(w,h,x,y,z,ry){var m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:0x000000}));m.position.set(x,y,z);m.rotation.y=ry;shell.add(m);return m;}
+mark(12,6,lx(102.5),8,-63.06,Math.PI);          /* TP4056 charge port, rear wall */
+mark(24,8,-70.06,22,wz(47),-Math.PI/2);          /* ESP32 USB-C, left wall */
+mark(21,15,70.06,23,wz(40),Math.PI/2);           /* rocker cutout, right wall */
+/* feet */
+[[14,14],[126,14],[14,112],[126,112]].forEach(function(p){
+  var f=at(cyl(9,9,3,0x0a0a0a,0.95),lx(p[0]),-1.5,wz(p[1]));world.add(tag(f,19));
+});
+/* grid */
+var grid=new THREE.GridHelper(400,40,0x808488,0x808488);grid.position.y=-3.05;grid.material.transparent=true;grid.material.opacity=0.18;world.add(grid);
+
+/* ---- lid (sloped plate and everything mounted to it) ---- */
+var lidWrap=grp();world.add(lidWrap);
+var lid=grp();lid.position.set(0,48.5,0);lid.rotation.x=T;lidWrap.add(lid);
+var plate=at(shellPiece(new THREE.BoxGeometry(140,3,126/cT),0x2a2b30),0,-1.5,0);lid.add(tag(plate,17));
+postPos.forEach(function(p){
+  var s=at(cyl(3,3,1.6,0x0b0b0c,0.5,0.3,20),lx(p[0])*0.92,0.8,lz(p[1]));lid.add(tag(s,23));
+});
+/* OLED */
+function oledTex(){
+  var c=document.createElement('canvas');c.width=512;c.height=134;var g=c.getContext('2d');
+  g.fillStyle='#02060a';g.fillRect(0,0,512,134);g.fillStyle='#e6f0ff';
+  g.font='500 30px "IBM Plex Mono",monospace';g.fillText('V1  00:01:12:08',16,40);
+  g.font='500 22px "IBM Plex Mono",monospace';g.fillStyle='#9fb4cc';g.fillText('ZOOM 120%   JOG  ▶',16,76);
+  g.fillStyle='#e6f0ff';for(var i=0;i<46;i++){var h=6+Math.abs(Math.sin(i*1.3))*26+(i%5)*2;g.fillRect(16+i*10.4,126-h,6,h);}
+  var t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;
+}
+var oled=grp();lid.add(tag(oled,11,[0,2,0]));
+oled.position.set(lx(70),0,lz(21.5));
+var og=box(81,0.6,23,0x000000,0.2);og.position.set(-0.8,0.3,0);oled.add(og);
+var op=new THREE.Mesh(new THREE.PlaneGeometry(78.8,21.2),new THREE.MeshBasicMaterial({map:oledTex()}));op.rotation.x=-Math.PI/2;op.position.set(-0.8,0.65,0);oled.add(op);
+/* board 100.5 x 33.5 x 1.0 hangs 2.8 mm under the plate on four M3 bosses (95 x 28.5 mm spacing) */
+oled.add(at(box(100.5,1,33.5,0x1d4fa8,0.5),0,-6.3,0));
+oled.add(at(box(88,2.8,27.8,0x0d0e10,0.3),0,-4.4,0));
+oled.add(at(box(5.1,8.5,20.3,0x141414,0.6),45.5,-11.05,0));
+[[-47.5,-14.25],[47.5,-14.25],[-47.5,14.25],[47.5,14.25]].forEach(function(q){
+  oled.add(at(cyl(3,3,2.8,0x24262b,0.7,0,20),q[0],-4.4,q[1]));
+  oled.add(at(cyl(1.5,1.5,1.2,0xc4c6ca,0.3,0.9,14),q[0],-7.4,q[1]));
+  lid.add(tag(at(cyl(2.7,2.7,0.8,0xc9a24a,0.35,0.8,16),lx(70)+q[0],-3.4,lz(21.5)+q[1]),20));
+  var bh=at(cyl(2.9,2.9,1,0x0b0b0c,0.5,0.3,16),q[0],-7.5,q[1]);oled.add(tag(bh,22));
+});
+/* keys */
+var pitch=19.05;
+for(var r=0;r<3;r++)for(var c=0;c<3;c++){
+  var u=22+c*pitch,v=72+r*pitch,light=(r===0&&c===2);
+  var sw=grp();sw.position.set(lx(u),0,lz(v));lid.add(sw);
+  sw.add(at(box(15.6,5,15.6,0x3a3d43,0.5),0,2.5,0));
+  sw.add(at(box(14,5.5,14,0x2e3036,0.5),0,-5.75,0));
+  sw.add(at(box(4,2.5,4,0xb08a46,0.4,0.6),0,-9.5,0));
+  tag(sw,12,[0,-2,0]);
+  var cap=at(box(18,7.5,18,light?0xe4e1d8:0x4a4d54,0.55),lx(u),8.75,lz(v));
+  /* cap belongs to its own tag but sits on the lid */
+  cap.position.set(lx(u),8.75,lz(v));lid.add(tag(cap,13,[0,4,0]));
+}
+/* encoders */
+function encoder(u,v,rad,kh,color,kr){
+  var m=grp();m.position.set(lx(u),0,lz(v));lid.add(m);
+  m.add(at(box(26.2,1.6,18.63,0x2f7a46,0.5),3.8,-10.3,2.1));
+  m.add(at(box(2.6,8.5,12.7,0x141414,0.6),3.8+13.1-2.2,-15.4,2.1-1));
+  m.add(at(box(12,6.5,12,0xb9bcc0,0.35,0.8),0,-6.25,0));
+  m.add(at(cyl(3.2,3.2,5,0xc4c6ca,0.3,0.9,16),0,2,0));
+  
+  tag(m,14,[0,-8,0]);
+  var k=grp();k.position.set(lx(u),0,lz(v));lid.add(k);
+  var kn=at(cyl(rad,rad,kh,color,0.45,0.1,40),0,3+kh/2,0);k.add(kn);
+  k.add(at(box(1.6,0.4,rad*0.7,0xe9e9e9,0.4),0,3+kh+0.2,-rad*0.38));
+  return k;
+}
+var dials=[];
+for(var i=0;i<4;i++){var d=encoder(21+i*29,46,12,14,0x131416);tag(d,15,[0,10,0]);dials.push(d);}
+var big=encoder(108,92,19,18,0x101113);tag(big,16,[0,12,0]);
+/* coin motor + foam */
+var mot=grp();mot.position.set(lx(108),-4.5,lz(110));lid.add(tag(mot,10,[0,0,0]));
+mot.add(cyl(5,5,3,0xa8abb0,0.35,0.8,24));
+mot.add(at(box(11,0.8,11,0xece8dc,0.9),0,1.9,0));
+lid.add(tag(at(box(12,1,12,0xece8dc,0.9),lx(108),-3.5,lz(110)),34));
+
+/* ---- internals ---- */
+var inner=grp();world.add(inner);
+var gPower=grp(),gStand=grp(),gBoard=grp(),gEsp=grp();
+inner.add(gPower);inner.add(gStand);inner.add(gBoard);gBoard.add(gEsp);
+var EX={lid:[0,75,150],pwr:[0,0,12],stand:[0,0,26],board:[0,0,42],esp:[0,0,20]};
+/* foam pads */
+function pad(w,d,u,v){var p=at(box(w,1,d,0xece8dc,0.9),lx(u),3.5,wz(v));gPower.add(tag(p,34));return p;}
+pad(79,26,52,16.5);pad(19,28.8,102.5,19.4);pad(23,45,123.5,51.5);
+/* battery holder + cell */
+var hold=grp();hold.position.set(lx(52),4,wz(16.5));gPower.add(hold);
+hold.add(at(box(77,2,26,0x25262a,0.7),0,1,0));
+hold.add(at(box(4,8,26,0x25262a,0.7),-36.5,4,0));hold.add(at(box(4,8,26,0x25262a,0.7),36.5,4,0));
+hold.add(at(box(77,5,2,0x25262a,0.7),0,2.5,-12));hold.add(at(box(77,5,2,0x25262a,0.7),0,2.5,12));
+tag(hold,2,[0,6,0]);
+var cell=cyl(9,9,65,0x1a55d6,0.4,0.2,32);cell.rotation.z=Math.PI/2;cell.position.set(lx(52),4+2+9,wz(16.5));gPower.add(tag(cell,1,[0,9,0]));
+var capm=cyl(8,8,0.6,0xcfd2d6,0.3,0.9,24);capm.rotation.z=Math.PI/2;capm.position.set(lx(52)+32.8,4+11,wz(16.5));gPower.add(capm);
+/* TP4056 */
+var tp=grp();tp.position.set(lx(102.5),4,wz(19.4));gPower.add(tp);tag(tp,3,[0,4,0]);
+tp.add(at(box(17,1.6,26.8,0x2a62c9,0.5),0,0.8,0));
+tp.add(at(box(9,3.2,7.5,0xc9ccd0,0.3,0.9),0,3.2,-11));
+tp.add(at(box(5,1.2,5,0x111111,0.5),-3,2.2,2));tp.add(at(box(5,1.2,5,0x111111,0.5),3,2.2,8));tp.add(at(box(4,1.2,4,0x111111,0.5),4,2.2,-3));
+/* XL6009 */
+var xl=grp();xl.position.set(lx(123.5),4,wz(51.5));gPower.add(xl);tag(xl,4,[0,8,0]);
+xl.add(at(box(21,1.6,43,0x1f4fb4,0.5),0,0.8,0));
+xl.add(at(box(10,9,10,0x181818,0.5),0,6.1,-12));
+xl.add(at(box(6,5,6,0x2b6fdc,0.5),6,4.2,10));
+xl.add(at(cyl(3.6,3.6,8,0x1b1b1b,0.5,0.1,18),-5,5.6,12));
+xl.add(at(box(5,2,5,0x111111,0.5),-4,2.6,0));
+/* rocker switch */
+var rk=grp();rk.position.set(70,23,wz(40));gPower.add(rk);tag(rk,6,[0,0,0]);
+rk.add(at(box(6,15,21,0x0b0b0c,0.5),0,0,0));
+var tg=at(box(3,12,19,0x1f1f22,0.4),2.4,0,0);tg.rotation.z=0.14;rk.add(tg);
+/* standoffs */
+[[11,36.5],[105,36.5],[11,93.5],[105,93.5]].forEach(function(p){gStand.add(tag(at(cyl(2.6,2.6,5,0xb7b9bd,0.35,0.85,6),lx(p[0]),5.5,wz(p[1])),21));});
+/* main board */
+function perfTex(){
+  var c=document.createElement('canvas');c.width=c.height=64;var g=c.getContext('2d');
+  g.fillStyle='#8f6f35';g.fillRect(0,0,64,64);g.fillStyle='#d8b45a';g.beginPath();g.arc(32,32,13,0,7);g.fill();
+  g.fillStyle='#43301a';g.beginPath();g.arc(32,32,6,0,7);g.fill();
+  var t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(100/2.54,66/2.54);return t;
+}
+var pm=new THREE.MeshStandardMaterial({map:perfTex(),roughness:0.7});
+var board=new THREE.Mesh(new THREE.BoxGeometry(100,1.6,66),pm);board.position.set(lx(58),8.8,wz(65));gBoard.add(tag(board,27));
+var Y0=9.6;
+/* ESP32 + sockets */
+var espX=lx(35.5),espZ=wz(47);
+[-12.7,12.7].forEach(function(dz){gEsp.add(tag(at(box(56,8.5,2.6,0x1a1b1d,0.6),espX+1.5,Y0+4.25,espZ+dz),29));});
+var esp=grp();esp.position.set(espX,Y0+8.5,espZ);gEsp.add(esp);tag(esp,7,[0,4,0]);
+esp.add(at(box(63.1,1.6,28,0x14171a,0.5),0,0.8,0));
+esp.add(at(box(18,3,16,0xb9bcc0,0.3,0.85),10,3.1,0));
+esp.add(at(box(12,0.4,16,0x2a2e33,0.5),25,1.8,0));
+esp.add(at(box(8,3.2,9.2,0xc9ccd0,0.3,0.9),-30,3.2,-5.25));esp.add(at(box(8,3.2,9.2,0xc9ccd0,0.3,0.9),-30,3.2,5.25));
+esp.add(at(box(4,1.6,4,0x2d2d2d,0.5),-22,2.4,-11));esp.add(at(box(4,1.6,4,0x2d2d2d,0.5),-22,2.4,11));
+/* MCP23017 + DRV2605L */
+var mcp=grp();mcp.position.set(lx(31.5),Y0+6,wz(81));gBoard.add(mcp);tag(mcp,8,[0,4,0]);
+mcp.add(at(box(35,1.6,22,0x2b3140,0.5),0,0.8,0));mcp.add(at(box(9,2.6,16,0x111111,0.5),0,2.9,0));
+mcp.add(at(box(30,6,2.2,0x1a1b1d,0.6),0,-3,10));
+var drv=grp();drv.position.set(lx(69.5),Y0+6,wz(81));gBoard.add(drv);tag(drv,9,[0,4,0]);
+drv.add(at(box(19,1.6,18,0x15171a,0.5),0,0.8,0));drv.add(at(box(4,1,4,0x333333,0.5),0,2.1,0));
+drv.add(at(box(15,6,2.2,0x1a1b1d,0.6),0,-3,8));
+/* passives */
+for(var i=0;i<6;i++)gBoard.add(tag(at(cyl(2,2,5,0xe08a30,0.5,0,14),lx(22+i*8),Y0+2.5,wz(64.5)),24));
+for(var i=0;i<4;i++)gBoard.add(tag(at(box(6,2,2,0xcfa66a,0.6),lx(70+i*6),Y0+1,wz(66.5)),26));
+gBoard.add(tag(at(cyl(5,5,16,0x233a6b,0.45,0.1,24),lx(100),Y0+8,wz(40)),25));
+gBoard.add(at(box(1.2,16.2,2,0xd0d4da,0.4),lx(100)+4.4,Y0+8,wz(40)));
+/* wiring anchors */
+function A(parent,x,y,z){var o=new THREE.Object3D();o.position.set(x,y,z);parent.add(o);return o;}
+var aEsp=A(esp,0,4,0),aOled=A(oled,45,-9,0),aMcp=A(mcp,0,3,0),aDrv=A(drv,0,3,0),aMot=A(mot,0,0,0),
+    aCell=A(hold,36,6,0),aTp=A(tp,0,3,0),aXl=A(xl,0,4,-4),aRk=A(rk,-3,0,0),aEspL=A(esp,-20,3,0),
+    aKeys=A(lid,lx(41),-9,lz(91)),aBig=A(big,0,-9,0),aD=dials.map(function(d){return A(d,0,-11,0);}),
+    aEspR=A(esp,18,3,0),aXl2=A(xl,0,3,18),aCap=A(gBoard,lx(100),Y0+16,wz(40));
+var WIRES=[],wireGrp=grp();world.add(wireGrp);
+function wire(a,b,col,sag){
+  var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(15*3),3));
+  var l=new THREE.Line(g,new THREE.LineBasicMaterial({color:col}));l.frustumCulled=false;wireGrp.add(l);WIRES.push({a:a,b:b,l:l,s:sag==null?10:sag});
+}
+wire(aEsp,aOled,0xff8a24);wire(aEsp,aMcp,0x4aa3ff,4);wire(aEsp,aDrv,0x4aa3ff,4);wire(aMcp,aKeys,0xc7c7c7,14);wire(aMcp,aBig,0xc7c7c7,14);
+wire(aDrv,aMot,0xff4a4a,12);
+aD.forEach(function(a){wire(aEsp,a,0x4be08f,14);});
+wire(aCell,aTp,0xff4a4a,6);wire(aTp,aRk,0xff4a4a,6);wire(aRk,aXl,0xff4a4a,6);wire(aXl2,aEspR,0xff4a4a,8);wire(aXl,aCap,0xff4a4a,4);
+tag(wireGrp,31,[0,0,0]);
+
+/* ---------- highlight, labels ---------- */
+var sel=0, labelNodes={};
+function setEmissive(id,on){
+  var r=REG[id];if(!r)return;
+  r.objs.forEach(function(o){o.traverse(function(m){if(m.isMesh&&m.material&&m.material.emissive&&!m.material.isMeshBasicMaterial){m.material.emissive.setHex(on?0xff6a00:0x000000);m.material.emissiveIntensity=on?0.55:1;}});});
+}
+function select(n,fromList){
+  if(sel===n)n=0;
+  if(n&&INTERNAL[n]&&modeNow===0&&!document.getElementById('tXray').checked)setMode(1);
+  if(sel){setEmissive(sel,false);if(labelNodes[sel])labelNodes[sel].classList.remove('on');}
+  sel=n;
+  if(sel){setEmissive(sel,true);if(labelNodes[sel])labelNodes[sel].classList.add('on');}
+  renderDetail();syncRows(!fromList);
+}
+Object.keys(REG).forEach(function(k){
+  var id=+k;if(id===31)return;
+  var b=document.createElement('button');b.className='mk';b.type='button';b.textContent=id;b.setAttribute('aria-label','Part '+id);
+  b.addEventListener('click',function(e){e.stopPropagation();select(id);});
+  labelsEl.appendChild(b);labelNodes[id]=b;
+});
+var tmpV=new THREE.Vector3();
+function placeLabels(){
+  var w=stage.clientWidth,h=stage.clientHeight,show=document.getElementById('tLbl').checked,closed=cur.lid<25&&!document.getElementById('tXray').checked;
+  Object.keys(labelNodes).forEach(function(k){
+    var el=labelNodes[k],r=REG[k];
+    if(!show||(INTERNAL[k]&&closed)){el.style.display='none';return;}
+    tmpV.set(r.off[0],r.off[1],r.off[2]);r.objs[0].localToWorld(tmpV);tmpV.project(camera);
+    if(tmpV.z>1){el.style.display='none';return;}
+    el.style.display='block';
+    el.style.transform='translate('+((tmpV.x*0.5+0.5)*w)+'px,'+((-tmpV.y*0.5+0.5)*h)+'px)';
+  });
+}
+
+/* ---------- orbit + presets ---------- */
+var cam={az:0.62,el:0.5,dist:430,tx:0,ty:26,tz:0},goal={az:0.62,el:0.5,dist:430,ty:26};
+var INTERNAL={22:1,1:1,2:1,3:1,4:1,7:1,8:1,9:1,10:1,14:1,20:1,21:1,24:1,25:1,26:1,27:1,29:1,34:1};
+var VIEWS={iso:[0.62,0.5],top:[0,1.5],front:[0,0.08],side:[1.5708,0.08],rear:[3.1416,0.32]};
+var modeNow=0,distBase=430;
+function applyCam(){
+  var ce=Math.cos(cam.el);
+  camera.position.set(cam.tx+cam.dist*Math.sin(cam.az)*ce,cam.ty+cam.dist*Math.sin(cam.el),cam.tz+cam.dist*Math.cos(cam.az)*ce);
+  camera.lookAt(cam.tx,cam.ty,cam.tz);
+}
+var ptrs={},lastD=0,moved=0;
+stage.addEventListener('pointerdown',function(e){stage.setPointerCapture(e.pointerId);ptrs[e.pointerId]={x:e.clientX,y:e.clientY};moved=0;stage.classList.add('drag');});
+stage.addEventListener('pointermove',function(e){
+  var p=ptrs[e.pointerId];if(!p)return;
+  var ids=Object.keys(ptrs);
+  if(ids.length===1){
+    var dx=e.clientX-p.x,dy=e.clientY-p.y;moved+=Math.abs(dx)+Math.abs(dy);
+    goal.az-=dx*0.008;goal.el=Math.max(0.03,Math.min(1.52,goal.el+dy*0.008));
+  }else if(ids.length===2){
+    var o=ptrs[ids[0]==e.pointerId?ids[1]:ids[0]];var d=Math.hypot(e.clientX-o.x,e.clientY-o.y);
+    if(lastD){goal.dist=Math.max(170,Math.min(900,goal.dist*lastD/d));}lastD=d;moved+=5;
+  }
+  p.x=e.clientX;p.y=e.clientY;
+});
+function endPtr(e){delete ptrs[e.pointerId];lastD=0;if(!Object.keys(ptrs).length)stage.classList.remove('drag');}
+stage.addEventListener('pointerup',function(e){
+  var wasTap=moved<6&&Object.keys(ptrs).length===1;endPtr(e);if(wasTap)pick(e);
+});
+stage.addEventListener('pointercancel',endPtr);
+stage.addEventListener('wheel',function(e){e.preventDefault();goal.dist=Math.max(170,Math.min(900,goal.dist*(1+e.deltaY*0.001)));},{passive:false});
+var ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
+function pick(e){
+  var rc=stage.getBoundingClientRect();ndc.set(((e.clientX-rc.left)/rc.width)*2-1,-((e.clientY-rc.top)/rc.height)*2+1);
+  ray.setFromCamera(ndc,camera);var hits=ray.intersectObjects(world.children,true);
+  for(var i=0;i<hits.length;i++){
+    var o=hits[i].object;if(o.isLine)continue;
+    while(o&&!o.userData.pid)o=o.parent;
+    if(o&&o.userData.pid&&o.userData.pid!==31){select(o.userData.pid);return;}
+  }
+}
+
+/* ---------- animation ---------- */
+var cur={lid:0,pwr:0,stand:0,board:0,esp:0},goalMode=0;
+function setMode(m){
+  goalMode=m;modeNow=m;
+  goal.dist=[430,560,720][m];goal.ty=[26,58,96][m];
+  [].forEach.call(document.querySelectorAll('#modeSeg button'),function(b){b.setAttribute('aria-pressed',String(+b.dataset.m===m));});
+}
+function lerp(a,b,t){return a+(b-a)*t;}
+function pos(a,b,out,sag){
+  var A_=new THREE.Vector3(),B_=new THREE.Vector3();a.getWorldPosition(A_);b.getWorldPosition(B_);
+  var arr=out.geometry.attributes.position.array;
+  for(var i=0;i<15;i++){var t=i/14;arr[i*3]=lerp(A_.x,B_.x,t);arr[i*3+1]=lerp(A_.y,B_.y,t)-Math.sin(t*Math.PI)*sag*0.4;arr[i*3+2]=lerp(A_.z,B_.z,t);}
+  out.geometry.attributes.position.needsUpdate=true;
+}
+function frame(){
+  cam.az+=(goal.az-cam.az)*0.14;cam.el+=(goal.el-cam.el)*0.14;cam.dist+=(goal.dist-cam.dist)*0.14;cam.ty+=(goal.ty-cam.ty)*0.14;
+  ['lid','pwr','stand','board','esp'].forEach(function(k){cur[k]+=(EX[k][goalMode]-cur[k])*0.12;});
+  lidWrap.position.y=cur.lid;gPower.position.y=cur.pwr;gStand.position.y=cur.stand;gBoard.position.y=cur.board;gEsp.position.y=cur.esp;
+  /* the rocker moves with the right wall, so keep it fixed */
+  rk.position.y=26-cur.pwr;
+  world.updateMatrixWorld(true);
+  if(wireGrp.visible)WIRES.forEach(function(w){pos(w.a,w.b,w.l,w.s);});
+  applyCam();renderer.render(scene,camera);placeLabels();
+  requestAnimationFrame(frame);
+}
+function resize(){var w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+if(window.ResizeObserver)new ResizeObserver(resize).observe(stage);window.addEventListener('resize',resize);
+
+/* ---------- UI ---------- */
+var listEl=document.getElementById('list'),detailEl=document.getElementById('detail'),filt='all',rowEls={};
+function buildList(){
+  listEl.innerHTML='';rowEls={};var last='';
+  PARTS.forEach(function(p){
+    if(filt!=='all'&&p[4]!==filt)return;
+    if(p[0]!==last){var c=document.createElement('div');c.className='cat';c.textContent=p[0];listEl.appendChild(c);last=p[0];}
+    var r=document.createElement('div');r.className='row';r.tabIndex=0;r.setAttribute('role','option');r.setAttribute('aria-selected',String(sel===p[1]));
+    r.innerHTML='<span class="no">'+(p[1]<10?'0':'')+p[1]+'</span><span class="nm"></span><span class="st '+p[4]+'">'+ST[p[4]]+'</span>';
+    var nm=r.querySelector('.nm');nm.textContent=p[2]+' '+p[3];
+    var s=document.createElement('small');s.textContent=(p[5]?p[5]+' · ':'')+(MODEL[p[1]]?'in model':'not drawn');nm.appendChild(s);
+    r.addEventListener('click',function(){select(p[1],true);});
+    r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();select(p[1],true);}});
+    listEl.appendChild(r);rowEls[p[1]]=r;
+  });
+}
+function syncRows(scroll){
+  Object.keys(rowEls).forEach(function(k){rowEls[k].setAttribute('aria-selected',String(+k===sel));});
+  if(scroll&&rowEls[sel])rowEls[sel].scrollIntoView({block:'nearest'});
+}
+function renderDetail(){
+  var p=PARTS.filter(function(x){return x[1]===sel;})[0];
+  if(!p){detailEl.innerHTML='<div class="n">PICK A PART</div><h2>Click a number in the model or a row below</h2><p>Each number matches the parts list. The part glows in the 3D view and this card says where it fits.</p>';return;}
+  detailEl.innerHTML='';
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;e.textContent=x;detailEl.appendChild(e);return e;}
+  el('div','n','PART '+(p[1]<10?'0':'')+p[1]+' · '+p[0].toUpperCase());
+  el('h2','',p[2]+' '+p[3]);
+  el('p','',p[6]);
+  var m=el('div','meta','');m.textContent=[ST[p[4]],p[5],MODEL[p[1]]?'drawn in 3D':'not drawn'].filter(Boolean).join('  ·  ');
+}
+document.getElementById('filter').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;filt=b.dataset.f;
+  [].forEach.call(this.querySelectorAll('button'),function(x){x.setAttribute('aria-pressed',String(x===b));});buildList();
+});
+document.getElementById('modeSeg').addEventListener('click',function(e){var b=e.target.closest('button');if(b)setMode(+b.dataset.m);});
+document.getElementById('viewSeg').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;var v=VIEWS[b.dataset.v];goal.az=v[0];goal.el=v[1];
+  [].forEach.call(this.querySelectorAll('button'),function(x){x.setAttribute('aria-pressed',String(x===b));});
+});
+document.getElementById('tXray').addEventListener('change',function(){
+  var x=this.checked;shellMats.forEach(function(m){m.opacity=x?0.16:1;m.depthWrite=!x;m.needsUpdate=true;});
+});
+document.getElementById('tWire').addEventListener('change',function(){wireGrp.visible=this.checked;});
+
+buildList();renderDetail();resize();setMode(0);cam.dist=goal.dist;
+window.__bp={select:select,setMode:setMode,goal:goal,cam:cam};
+requestAnimationFrame(frame);
+})();
+</script>

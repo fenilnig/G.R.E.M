@@ -1,0 +1,84 @@
+﻿Group,Part,Qty in model,Spec / size
+Printed,Body (printed),1,"PETG, 140 x 126 x 62"
+Consumables,Foam pad - battery holder,1,78 x 25 x 1
+Consumables,Foam pad - TP4056,1,17 x 27 x 1
+Consumables,Foam pad - XL6009,1,21 x 43 x 1
+Power,18650 holder base,1,76.6 x 23
+Power,18650 holder end wall -,1,
+Power,18650 holder end wall +,1,
+Power,18650 holder rail rear,1,
+Power,18650 holder rail front,1,
+Power,18650 cell,1,dia 18 x 65
+Power,TP4056 PCB,1,26.8 x 17
+Power,TP4056 USB-C port,1,
+Power,TP4056 chips,1,
+Power,XL6009 PCB,1,43 x 21
+Power,XL6009 inductor,1,
+Power,XL6009 trimmer,1,
+Power,XL6009 capacitor,1,
+Power,XL6009 IC,1,
+Power,Rocker switch body,1,"KCD1, hole 21 x 15"
+Power,Rocker bezel,1,
+Power,Rocker rocker,1,
+Hardware,"Standoff (M3 F-F, 5)",4,M3 hex 5 mm
+Hardware,Floor screw (M3x6),4,M3 x 6
+Electronics,Main board (perfboard),1,100 x 66 x 1.6
+Electronics,ESP32 socket rear,1,
+Electronics,ESP32 socket front,1,
+Electronics,ESP32-S3 PCB,1,63.1 x 28
+Electronics,ESP32 shield,1,
+Electronics,ESP32 USB-C x2,1,
+Electronics,ESP32 buttons,1,
+Electronics,MCP23017 breakout (assumed 35 x 22),1,size assumed
+Electronics,MCP23017 headers,1,
+Electronics,DRV2605L breakout,1,19 x 18
+Electronics,DRV2605L headers,1,
+Electronics,Capacitor 100nF,6,
+Electronics,Resistor,4,
+Electronics,Bulk capacitor,1,dia 10 x 16
+Hardware,Post insert (M3),4,M3 heat-set
+Printed,Top plate (printed),1,"PETG, 140 x 130 x 3 (+bosses)"
+Display,OLED glass,1,
+Display,OLED PCB,1,100.5 x 33.5 x 1
+Display,OLED header,1,
+Hardware,OLED insert,4,M3 insert
+Controls,MX switch,9,MX
+Controls,Keycap,9,18 x 18 x 7.5
+Controls,KY-040 PCB (small 1),1,26.2 x 18.6
+Controls,KY-040 header (small 1),1,
+Controls,Encoder body (small 1),1,
+Controls,Encoder bushing (small 1),1,
+Controls,Encoder shaft (small 1),1,"dia 6 D-shaft (4.5 across flats), assumed 11.5 above the bushing"
+Hardware,M7 nut (small 1),1,
+Printed,Knob (small 1),1,PETG
+Controls,KY-040 PCB (small 2),1,26.2 x 18.6
+Controls,KY-040 header (small 2),1,
+Controls,Encoder body (small 2),1,
+Controls,Encoder bushing (small 2),1,
+Controls,Encoder shaft (small 2),1,"dia 6 D-shaft (4.5 across flats), assumed 11.5 above the bushing"
+Hardware,M7 nut (small 2),1,
+Printed,Knob (small 2),1,PETG
+Controls,KY-040 PCB (small 3),1,26.2 x 18.6
+Controls,KY-040 header (small 3),1,
+Controls,Encoder body (small 3),1,
+Controls,Encoder bushing (small 3),1,
+Controls,Encoder shaft (small 3),1,"dia 6 D-shaft (4.5 across flats), assumed 11.5 above the bushing"
+Hardware,M7 nut (small 3),1,
+Printed,Knob (small 3),1,PETG
+Controls,KY-040 PCB (small 4),1,26.2 x 18.6
+Controls,KY-040 header (small 4),1,
+Controls,Encoder body (small 4),1,
+Controls,Encoder bushing (small 4),1,
+Controls,Encoder shaft (small 4),1,"dia 6 D-shaft (4.5 across flats), assumed 11.5 above the bushing"
+Hardware,M7 nut (small 4),1,
+Printed,Knob (small 4),1,PETG
+Controls,KY-040 PCB (large),1,26.2 x 18.6
+Controls,KY-040 header (large),1,
+Controls,Encoder body (large),1,
+Controls,Encoder bushing (large),1,
+Controls,Encoder shaft (large),1,"dia 6 D-shaft (4.5 across flats), assumed 11.5 above the bushing"
+Hardware,M7 nut (large),1,
+Printed,Knob (large),1,PETG
+Consumables,Motor foam,1,
+Haptics,Coin motor,1,dia 10 x 3
+Hardware,Lid screw (M3x8),4,M3 x 8

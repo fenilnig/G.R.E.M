@@ -1,0 +1,38 @@
+G.R.E.M. - GRADING, RENDERING & EDITING MACHINE
+Deadline: Tuesday 27 Oct 2026
+
+WHAT IT IS
+ESP32-S3 (N16R8) console with a 3.12" SSD1322 OLED (256x64), 3x3 MX keys, 4 small dials + 1 large haptic dial (KY-040 modules),
+coin motor + DRV2605L haptics, MCP23017 I/O expander. Power: 18650 + protected TP4056 USB-C charger + XL6009 boost set to 5.0 V.
+Wireless BLE keyboard plus native USB HID.
+
+PIN PLAN (Rev B)
+  OLED SPI (4-wire): CS 10, MOSI 11, CLK 12, DC 13, RST 14
+  I2C: SDA 8, SCL 9   (DRV2605L 0x5A, MCP23017 0x20)
+  Encoders (A/B): 4+5, 6+7, 15+16, 17+18, 1+2
+  9 keys + 5 encoder buttons on the MCP23017; interrupt -> GPIO 21
+
+POWER RULES
+  - XL6009 output set to 5.0 V with a multimeter BEFORE connecting the ESP32 (feeds ESP32 5V pin only).
+  - KY-040, MCP23017 and DRV2605L run from 3V3.
+  - TP4056 has no power-path: switch the rocker OFF while charging; rocker off before plugging ESP32 USB.
+  - BLE only (no classic Bluetooth).
+
+MEASURED SIZES (mm)
+  OLED board 100.5x33.5, window 81x23, holes 95x28.5 | KY-040 26.2x18.6 | ESP32-S3 63.1x28 | TP4056 26.8x17
+  XL6009 43x21 | 18650 holder 76.6 long (pocket 79x26) | rocker cutout 21x15 | MCP23017 breakout: not yet measured
+
+STATUS (22 Oct, after the full-assembly CAD)
+  [x] Parts list, 3D blueprint, printable CAD (body, top plate, 5 knobs, test pieces), full assembly CAD (122 parts, 0 collisions)
+  [ ] Test tile + 6 knob stubs printed in PETG and fit-checked
+  [ ] Four carts paid (Robu, Robocraze, Fab.to.Lab, Amazon) ~ Rs 3,958; black PETG 1 kg
+  [ ] Measure the MCP23017 breakout (model assumes 35 x 22), then add its mount
+  [ ] Check the KY-040 shaft: round knurled or D-flat, and how far it sticks out above the nut (model assumes about 11.5 mm)
+  [ ] Decide how the main board is fixed to its standoffs (depends on the standoffs that arrive)
+  [ ] Full print (body, plate, 4 small knobs, 1 large knob)
+  [ ] Bench tests: XL6009 to 5.0 V, coin motor on 3 V, OLED, keys
+  [ ] Wiring, assembly, firmware
+
+OPEN ITEMS IN THE MODEL (things guessed, not measured)
+  - MCP23017 breakout size, KY-040 shaft type and length, KCD1 rocker depth (modelled 20 deep), 18650 holder width (23) and height.
+  - Wires are not modelled.

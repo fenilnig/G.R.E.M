@@ -1,0 +1,39 @@
+G.R.E.M. (Grading, Rendering & Editing Machine) - PRINT PACKAGE, REVISION C (all dimensions in mm)
+USE ONLY THESE FILES. Anything named edit1_* from earlier is obsolete (the rocker cutout, battery pocket, OLED window and floor holes moved).
+
+PRINTER: Bambu Lab A1 (256 x 256 bed). MATERIAL: black PETG (strength first). Textured PEI plate (smooth plate needs glue stick for PETG).
+Profile: 0.4 mm nozzle, 0.20 mm layers, 4 walls, 30% infill, no supports, slow outer walls. Dry the filament if it has been open a while.
+
+STEP 1 - PRINT THE TEST PIECES FIRST (about 1 hour), IN THE SAME PETG
+  grem_test_tile.stl         Flat tile 100 x 66. Tests: 3 MX key holes (14.0 / 14.1 / 14.2), 3 encoder holes (7.0 / 7.2 / 7.4),
+                             rocker cutout 21 x 15 (1.5 mm panel), screw hole + head recess, 4.2 mm insert hole,
+                             and a sample of the raised G.R.E.M. lettering.
+  grem_test_knob_stubs.stl   SIX stubs to find the encoder-shaft fit. Slots on the rim = variant number:
+                               1 = round 5.9   2 = round 6.0   3 = D-bore 4.6 across flats   4 = D 4.8   5 = D 5.0   6 = D 5.2
+                             Push each onto the KY-040 shaft. The one that grips firmly without forcing wins.
+  Tell me: which key hole, which encoder hole, which stub number, and whether the rocker and an M3 insert fit.
+
+STEP 2 - FULL PRINT
+  grem_body.stl           x1   Floor on the bed. 140 x 126 x 62.
+  grem_top_plate.stl      x1   UPSIDE DOWN: flat top face on the bed, bosses pointing up. No supports.
+  grem_knob_small_x4.stl  x4   Dia 24 x 14. Flat top on the bed, bore facing up. (The file holds ONE knob.)
+  grem_knob_large_x1.stl  x1   Dia 38 x 18. Same orientation.
+  Body: the 24 x 8 USB cutout and 21 x 15 rocker cutout bridge in the wall; add supports only if they sag.
+
+HARDWARE
+  Lid: 4 x M3 heat-set inserts in the corner posts (hole 4.2, 7 deep, tilted with the lid: press in square to the sloped post top)
+       + 4 x M3 x 8 screws through the plate.
+  OLED: 4 more heat-set inserts in the bosses under the plate (hole 4.2, 4 deep). Use inserts no longer than 5 mm there.
+  Main board: 4 x M3 x 5 hex standoffs on the floor, M3 x 6 screws from underneath (head recess in the floor).
+              Floor holes at 11 / 105 from the left edge and 36.5 / 93.5 from the rear wall (board 100 x 66, 4.5 mm in from its edges).
+  Rubber feet and foam tape: glue on, no features.
+
+WALL CUTOUTS (standing in front of the finished unit)
+  Rear wall:  12 x 6 for the charger USB-C.
+  Left wall:  24 x 8 for the ESP32 USB-C ports.
+  Right wall: 21 x 15 for the rocker, centred 23 mm up, wall thinned to 1.5 mm behind it.
+  Front wall: raised G.R.E.M. lettering, 0.6 mm high.
+
+FILES
+  STL/ and STEP/   the six printable parts.   ASSEMBLY/   the full assembly (every component placed), renders, parts list, overlap report.
+  source/grem_cad.py builds the printable parts, source/grem_assembly.py builds the full assembly. Every dimension is a variable at the top.
