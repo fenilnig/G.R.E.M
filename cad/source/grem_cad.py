@@ -136,16 +136,16 @@ def export(obj, name):
 
 k_small = knob(25, 15, 24, "small")
 def knob_big_standin():
-    """Same envelope and structure as the printable knurled knob (grem_knob_knurled.py) but without the pyramid texture:
-    skirt (peak radius 24 -> 23.3 mean), top cap, hub, 6 ribs, D-bore, pointer groove."""
-    R, RV, H, HK, TOP_T, R_IN = 24.0, 23.3, 18.0, 14.0, 4.0, 21.4
-    skirt = cylz(0, 0, 0, HK, 2 * (R - 0.35)).cut(cylz(0, 0, -1, HK + 1, 2 * R_IN))
-    cap = cylz(0, 0, H - TOP_T, H, 2 * RV).faces(">Z").edges().chamfer(1.0)
-    k = skirt.union(cap).union(cylz(0, 0, 0, H - TOP_T + 0.5, 14.4))
+    """Same envelope and structure as the printable knurled knob (grem_knob_knurled.py) but without the diamond texture:
+    base ring, knurl band (mean radius 23.65), flat top cap, hub, 6 ribs, D-bore."""
+    R, RV, H, ZB, ZT, R_IN = 24.0, 23.35, 18.0, 1.5, 14.07, 21.4
+    band = cylz(0, 0, ZB, ZT, 2 * 23.65).cut(cylz(0, 0, -1, H, 2 * R_IN))
+    base = cylz(0, 0, 0, ZB + 0.2, 2 * R).cut(cylz(0, 0, -1, H, 2 * R_IN))
+    cap = cylz(0, 0, ZT - 0.5, H, 2 * RV).faces(">Z").edges().chamfer(0.8)
+    k = band.union(base).union(cap).union(cylz(0, 0, 0, ZT, 14.4))
     for i in range(6):
-        k = k.union(box(5, 22.0, -1.2, 1.2, 0, H - TOP_T + 0.5).rotate((0, 0, 0), (0, 0, 1), i * 60))
-    k = k.cut(cylz(0, 0, -1, 11.0, BORE_D).intersect(box(-4, BORE_FLAT, -4, 4, -1, 12)))
-    return k.cut(box(-0.6, 0.6, 8.0, 21.0, H - 0.6, H + 1))
+        k = k.union(box(5, 22.0, -1.2, 1.2, 0, ZT).rotate((0, 0, 0), (0, 0, 1), i * 60))
+    return k.cut(cylz(0, 0, -1, 11.0, BORE_D).intersect(box(-4, BORE_FLAT, -4, 4, -1, 12)))
 k_big = knob_big_standin()
 
 # ---------------- test tile ----------------
