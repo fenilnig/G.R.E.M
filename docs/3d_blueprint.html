@@ -81,7 +81,7 @@ aside{display:flex;flex-direction:column;gap:12px;min-width:0}
 <div class="wrap">
   <header>
     <h1>G.R.E.M. · 3D Blueprint</h1>
-    <div class="sub">140 × 126 mm footprint · 65 mm rear · 32 mm front · top plate slopes 14.7° · 39 numbered parts</div>
+    <div class="sub">140 × 140 mm footprint · 65 mm rear · 32 mm front · top plate slopes 13.3° · 39 numbered parts</div>
   </header>
   <main>
     <div class="stagecol">
@@ -144,8 +144,8 @@ var PARTS=[
  ['Controls',14,'KY-040 encoder modules','×5','cart','Robu ₹345 for 5','Under the lid, one under each knob, shaft through a 7 mm hole. Board is 26.2 × 18.6 mm with the shaft 9.3 mm from the left edge, header end facing right, so neighbours clear by 2.8 mm. You own 1, so you end with 6 and one spare.'],
  ['Controls',15,'Small dial knobs','×4','print','Ø25 mm (as printed, srh_eness design)','Row of four above the keys. Already printed: 4 on hand.'],
  ['Controls',16,'Haptic dial knob','×1','print','Ø48 mm x 18 mm','Right of the keys. Largest control on the deck.'],
- ['Enclosure',17,'Top plate','×1','print','140 × 130 mm, 3 mm','Sloped 14.7°. Holds the keys, dials and OLED, and carries the four lid screws.'],
- ['Enclosure',18,'Body (floor, three walls, corner posts)','×1','print','140 × 126 mm','Rear wall 65 mm, front wall 32 mm. Carries the nameplate band and the four corner posts.'],
+ ['Enclosure',17,'Top plate','×1','print','140 × 144 mm, 3 mm','Sloped 13.3°. Holds the keys, dials and OLED, and carries the four lid screws.'],
+ ['Enclosure',18,'Body (floor, three walls, corner posts)','×1','print','140 × 140 mm','Rear wall 65 mm, front wall 32 mm. Carries the nameplate band and the four corner posts.'],
  ['Enclosure',19,'Rubber feet','×4','cart','Amazon ₹199 for 18','Under the four corners of the floor.'],
  ['Fasteners',20,'M3 × 8 heat-set inserts','×25','cart','Robu ₹104','8 used: four on the corner posts for the lid screws, four under the plate for the OLED bolts.'],
  ['Fasteners',21,'M3 female-female standoffs, 5 mm','×24','cart','Robu ₹184','Four lift the main board off the floor.'],
@@ -184,11 +184,11 @@ scene.add(new THREE.HemisphereLight(0xffffff,0x3a3a44,0.95));
 var dl=new THREE.DirectionalLight(0xffffff,0.85);dl.position.set(140,230,170);scene.add(dl);
 var dl2=new THREE.DirectionalLight(0xffffff,0.35);dl2.position.set(-160,90,-130);scene.add(dl2);
 
-var T=Math.atan(33/126),cT=Math.cos(T);
-function hAt(v){return 65-33*v/126;}      /* top-surface height at plan depth v (0 rear .. 126 front) */
+var T=Math.atan(33/140),cT=Math.cos(T);
+function hAt(v){return 65-33*v/140;}      /* top-surface height at plan depth v (0 rear .. 140 front) */
 function lx(u){return u-70;}
-function lz(v){return (v-63)/cT;}          /* plan depth -> distance along the sloped lid */
-function wz(v){return v-63;}               /* plan depth -> world z */
+function lz(v){return (v-70)/cT;}          /* plan depth -> distance along the sloped lid */
+function wz(v){return v-70;}               /* plan depth -> world z */
 
 var REG={}, pickables=[];
 function tag(o,id,off){o.userData.pid=id;(REG[id]=REG[id]||{objs:[],off:off||[0,0,0]}).objs.push(o);return o;}
@@ -205,17 +205,17 @@ function shellMat(c){var m=mat(c,0.78,0);m.transparent=true;m.opacity=1;shellMat
 /* shell */
 var shell=grp();world.add(shell);
 function shellPiece(g,c){var m=new THREE.Mesh(g,shellMat(c));return m;}
-var base=at(shellPiece(new THREE.BoxGeometry(140,3,126),0x17181b),0,1.5,0);shell.add(tag(base,18,[45,12.5,64]));
-var rear=at(shellPiece(new THREE.BoxGeometry(140,65,3),0x17181b),0,32.5,-61.5);shell.add(tag(rear,18));
-var front=at(shellPiece(new THREE.BoxGeometry(140,32,3),0x17181b),0,16,61.5);shell.add(tag(front,18));
+var base=at(shellPiece(new THREE.BoxGeometry(140,3,140),0x17181b),0,1.5,0);shell.add(tag(base,18,[45,12.5,64]));
+var rear=at(shellPiece(new THREE.BoxGeometry(140,65,3),0x17181b),0,32.5,-68.5);shell.add(tag(rear,18));
+var front=at(shellPiece(new THREE.BoxGeometry(140,32,3),0x17181b),0,16,68.5);shell.add(tag(front,18));
 function sideWall(x0){
-  var s=new THREE.Shape();s.moveTo(63,0);s.lineTo(-63,0);s.lineTo(-63,32);s.lineTo(63,65);s.lineTo(63,0);
+  var s=new THREE.Shape();s.moveTo(70,0);s.lineTo(-70,0);s.lineTo(-70,32);s.lineTo(70,65);s.lineTo(70,0);
   var g=new THREE.ExtrudeGeometry(s,{depth:3,bevelEnabled:false});g.rotateY(Math.PI/2);g.translate(x0,0,0);
   return shellPiece(g,0x1d1e22);
 }
 shell.add(tag(sideWall(-70),18));shell.add(tag(sideWall(67),18));
 /* corner posts + inserts */
-var postPos=[[6,6],[134,6],[6,120],[134,120]];
+var postPos=[[6,6],[134,6],[6,134],[134,134]];
 postPos.forEach(function(p){
   var top=hAt(p[1])-3, h=top-3;
   var post=at(shellPiece(new THREE.CylinderGeometry(3.6,3.6,h,24),0x24262b),lx(p[0])*0.92,3+h/2,wz(p[1]));
@@ -233,14 +233,14 @@ function nameTex(){
   var t=new THREE.CanvasTexture(c);t.anisotropy=4;return t;
 }
 var np=new THREE.Mesh(new THREE.PlaneGeometry(130,16.25),new THREE.MeshBasicMaterial({map:nameTex()}));
-np.position.set(0,15,63.05);shell.add(np);
+np.position.set(0,15,70.05);shell.add(np);
 /* wall cutout marks */
 function mark(w,h,x,y,z,ry){var m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:0x000000}));m.position.set(x,y,z);m.rotation.y=ry;shell.add(m);return m;}
-mark(12,6,lx(102.5),8,-63.06,Math.PI);          /* TP4056 charge port, rear wall */
+mark(12,6,lx(102.5),8,-70.06,Math.PI);          /* TP4056 charge port, rear wall */
 mark(24,8,-70.06,22,wz(47),-Math.PI/2);          /* ESP32 USB-C, left wall */
 mark(21,15,70.06,23,wz(40),Math.PI/2);           /* rocker cutout, right wall */
 /* feet */
-[[14,14],[126,14],[14,112],[126,112]].forEach(function(p){
+[[14,14],[126,14],[14,126],[126,126]].forEach(function(p){
   var f=at(cyl(9,9,3,0x0a0a0a,0.95),lx(p[0]),-1.5,wz(p[1]));world.add(tag(f,19));
 });
 /* grid */
@@ -249,7 +249,7 @@ var grid=new THREE.GridHelper(400,40,0x808488,0x808488);grid.position.y=-3.05;gr
 /* ---- lid (sloped plate and everything mounted to it) ---- */
 var lidWrap=grp();world.add(lidWrap);
 var lid=grp();lid.position.set(0,48.5,0);lid.rotation.x=T;lidWrap.add(lid);
-var plate=at(shellPiece(new THREE.BoxGeometry(140,3,126/cT),0x2a2b30),0,-1.5,0);lid.add(tag(plate,17));
+var plate=at(shellPiece(new THREE.BoxGeometry(140,3,140/cT),0x2a2b30),0,-1.5,0);lid.add(tag(plate,17));
 postPos.forEach(function(p){
   var s=at(cyl(3,3,1.6,0x0b0b0c,0.5,0.3,20),lx(p[0])*0.92,0.8,lz(p[1]));lid.add(tag(s,23));
 });
@@ -279,7 +279,7 @@ oled.add(at(box(5.1,8.5,20.3,0x141414,0.6),45.5,-11.05,0));
 /* keys */
 var pitch=19.05;
 for(var r=0;r<3;r++)for(var c=0;c<3;c++){
-  var u=22+c*pitch,v=72+r*pitch,light=(r===0&&c===2);
+  var u=21+c*pitch,v=82+r*pitch*cT,light=(r===0&&c===2);
   var sw=grp();sw.position.set(lx(u),0,lz(v));lid.add(sw);
   sw.add(at(box(15.6,5,15.6,0x3a3d43,0.5),0,2.5,0));
   sw.add(at(box(14,5.5,14,0x2e3036,0.5),0,-5.75,0));
@@ -304,13 +304,13 @@ function encoder(u,v,rad,kh,color,kr){
   return k;
 }
 var dials=[];
-for(var i=0;i<4;i++){var d=encoder(21+i*29,46,12.5,15,0x131416);tag(d,15,[0,10,0]);dials.push(d);}
-var big=encoder(108,92,24,18,0x101113);tag(big,16,[0,12,0]);
+for(var i=0;i<4;i++){var d=encoder(24.5+i*30.333,52.5,12.5,15,0x131416);tag(d,15,[0,10,0]);dials.push(d);}
+var big=encoder(104,100.75,24,18,0x101113);tag(big,16,[0,12,0]);
 /* coin motor + foam */
-var mot=grp();mot.position.set(lx(108),-4.5,lz(110));lid.add(tag(mot,10,[0,0,0]));
+var mot=grp();mot.position.set(lx(104),-4.5,lz(118.75));lid.add(tag(mot,10,[0,0,0]));
 mot.add(cyl(5,5,3,0xa8abb0,0.35,0.8,24));
 mot.add(at(box(11,0.8,11,0xece8dc,0.9),0,1.9,0));
-lid.add(tag(at(box(12,1,12,0xece8dc,0.9),lx(108),-3.5,lz(110)),34));
+lid.add(tag(at(box(12,1,12,0xece8dc,0.9),lx(104),-3.5,lz(118.75)),34));
 
 /* ---- internals ---- */
 var inner=grp();world.add(inner);

@@ -7,16 +7,25 @@ import cadquery as cq
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "."
 # ---------------- parameters ----------------
-W, D, H = 140.0, 126.0, 65.0          # outer plan size, rear height (incl. plate)
+W, D, H = 140.0, 140.0, 65.0          # outer plan size, rear height (incl. plate)
 WALL, FLOOR, PT = 3.0, 3.0, 3.0       # wall, floor, plate thickness
-T = math.atan(33.0 / 126.0); cT, sT = math.cos(T), math.sin(T)
+T = math.atan(33.0 / D); cT, sT = math.cos(T), math.sin(T)
 Z0 = H - PT / cT                      # plate-underside height at v=0
-zu = lambda v: Z0 - 33.0 / 126.0 * v  # plate-underside height at plan depth v
+zu = lambda v: Z0 - 33.0 / D * v  # plate-underside height at plan depth v
 S = lambda v: v / cT                  # plan depth -> distance along plate
 INS_D = 4.2                           # M3 heat-set insert hole
 KEY_HOLE, KEY_RELIEF = 14.1, 15.6     # MX plate cutout / underside clip relief
 ENC_HOLE = 7.2                        # KY-040 bushing hole
-POSTS = [(8, 8), (132, 8), (8, 118), (132, 118)]
+POSTS = [(8, 8), (132, 8), (8, D - 8), (132, D - 8)]
+
+# ---- top-deck layout (plan coordinates; v = depth from rear wall). Outer margin 12 mm on all component edges ----
+KEY_PITCH = 19.05
+KEY_U0 = 21.0                                   # first key column centre (cap edge at u = 12)
+KEY_V0 = 82.0                                   # first key row centre (plan depth)
+DIAL_V = 52.5                                   # small-dial row centre
+DIAL_U = [24.5 + i * 30.333 for i in range(4)]  # knobs span u = 12 .. 128
+BIG_U, BIG_V = 104.0, 100.75                    # 48 mm knob spans u = 80..128, centred on the key block
+MOTOR_U, MOTOR_V = 104.0, BIG_V + 18.0
 
 def box(x0, x1, y0, y1, z0, z1):
     return cq.Workplane("XY").box(x1 - x0, y1 - y0, z1 - z0, centered=False).translate((x0, y0, z0))
@@ -91,15 +100,15 @@ for dx in (-47.5, 47.5):
 # MX keys 3x3, true 19.05 pitch along the plate
 for r in range(3):
     for c in range(3):
-        u = 22 + c * 19.05; s = S(72) + r * 19.05
+        u = KEY_U0 + c * KEY_PITCH; s = S(KEY_V0) + r * KEY_PITCH
         plate = plate.cut(box(u - KEY_HOLE/2, u + KEY_HOLE/2, s - KEY_HOLE/2, s + KEY_HOLE/2, -1, PT + 1))
         plate = plate.cut(box(u - KEY_RELIEF/2, u + KEY_RELIEF/2, s - KEY_RELIEF/2, s + KEY_RELIEF/2, -1, 1.5))
 # encoders: 4 small dials + 1 large
-ENC = [(21 + i * 29, S(46)) for i in range(4)] + [(108, S(92))]
+ENC = [(u, S(DIAL_V)) for u in DIAL_U] + [(BIG_U, S(BIG_V))]
 for (u, s) in ENC:
     plate = plate.cut(cylz(u, s, -1, PT + 1, ENC_HOLE))
 # coin-motor retaining ring on the underside
-mu, ms = 108, S(110)
+mu, ms = MOTOR_U, S(MOTOR_V)
 ring = cylz(mu, ms, -3.5, 0.01, 14.0).cut(cylz(mu, ms, -4, 1, 12.0))
 plate = plate.union(ring)
 

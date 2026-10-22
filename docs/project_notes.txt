@@ -36,3 +36,5 @@ STATUS (22 Oct, after the full-assembly CAD)
 OPEN ITEMS IN THE MODEL (things guessed, not measured)
   - MCP23017 breakout size, KY-040 shaft type and length, KCD1 rocker depth (modelled 20 deep), 18650 holder width (23) and height.
   - Wires are not modelled.
+
+LAYOUT REV D (Oct 23): body 140 x 140, slope 13.3 deg. 12 mm outer margin all round; dials 7 mm below OLED, 8 mm above keys; 48 mm knob centred on key block.

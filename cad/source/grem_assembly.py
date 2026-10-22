@@ -32,7 +32,7 @@ def hexp(cu, cv, z0, z1, af, hole=0):
 BLK=(0.09,0.09,0.10); DGR=(0.16,0.17,0.19); PCB=(0.12,0.32,0.62); GRN=(0.15,0.45,0.25); SIL=(0.75,0.77,0.80); GLD=(0.78,0.62,0.25)
 RED=(0.7,0.15,0.12); BLU=(0.10,0.33,0.80); CRM=(0.92,0.90,0.84); BRN=(0.55,0.43,0.2)
 
-add("Body (printed)", body, DGR, "Printed", "PETG, 140 x 126 x 62")
+add("Body (printed)", body, DGR, "Printed", "PETG, 140 x 140 x 62")
 # ---------------- floor: power ----------------
 add("Foam pad - battery holder", blk(52.0,16.5,3,4,78,25), CRM, "Consumables", "78 x 25 x 1")
 add("Foam pad - TP4056", blk(102.5,19.4,3,4,17.2,27), CRM, "Consumables", "17 x 27 x 1")
@@ -103,7 +103,7 @@ for dx in (-47.5,47.5):
 # keys
 for r in range(3):
     for c in range(3):
-        u=22+c*19.05; s=S(72)+r*19.05; n=r*3+c+1
+        u=G["KEY_U0"]+c*G["KEY_PITCH"]; s=S(G["KEY_V0"])+r*G["KEY_PITCH"]; n=r*3+c+1
         ladd(f"MX switch {n}", lblk(u,s,-5.5,3,14,14).union(lblk(u,s,3,8,15.6,15.6)).union(lblk(u,s,-7.75,-5.5,4,4)), (0.23,0.24,0.27), "Controls", "MX")
         ladd(f"Keycap {n}", lblk(u,s,8.5,16,18,18), (0.92,0.9,0.84) if (r,c)==(0,2) else (0.28,0.3,0.33), "Controls", "18 x 18 x 7.5")
 # encoders + knobs
@@ -120,7 +120,7 @@ for k,(u,s) in enumerate(ENC):
     kn = (k_big if big else k_small).translate((U(u),s,6.0))
     ladd(f"Knob ({nm})", kn, DGR, "Printed", "PETG")
 # motor
-mu,ms=108,S(110)
+mu,ms=G["MOTOR_U"],S(G["MOTOR_V"])
 ladd("Motor foam", lcyl(mu,ms,-0.8,0,11.6), CRM, "Consumables")
 ladd("Coin motor", lcyl(mu,ms,-3.8,-0.8,10), SIL, "Haptics", "dia 10 x 3")
 # lid screws (M3x8) + post inserts

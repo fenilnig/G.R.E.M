@@ -15,8 +15,8 @@ Controls,13,Keycaps,×9,have,18 × 18 mm,"One light-coloured cap, top-right, for
 Controls,14,KY-040 encoder modules,×5,cart,Robu ₹345 for 5,"Under the lid, one under each knob, shaft through a 7 mm hole. Board is 26.2 × 18.6 mm with the shaft 9.3 mm from the left edge, header end facing right, so neighbours clear by 2.8 mm. You own 1, so you end with 6 and one spare."
 Controls,15,Small dial knobs,×4,print,Ø25 mm (as printed, srh_eness design),Row of four above the keys. Already printed: 4 on hand.
 Controls,16,Haptic dial knob,×1,print,Ø48 mm x 18 mm,Right of the keys. Largest control on the deck.
-Enclosure,17,Top plate,×1,print,"140 × 130 mm, 3 mm","Sloped 14.7°. Holds the keys, dials and OLED, and carries the four lid screws."
-Enclosure,18,"Body (floor, three walls, corner posts)",×1,print,140 × 126 mm,"Rear wall 65 mm, front wall 32 mm. Carries the nameplate band and the four corner posts."
+Enclosure,17,Top plate,×1,print,"140 × 144 mm, 3 mm","Sloped 13.3°. Holds the keys, dials and OLED, and carries the four lid screws."
+Enclosure,18,"Body (floor, three walls, corner posts)",×1,print,140 × 140 mm,"Rear wall 65 mm, front wall 32 mm. Carries the nameplate band and the four corner posts."
 Enclosure,19,Rubber feet,×4,cart,Amazon ₹199 for 18,Under the four corners of the floor.
 Fasteners,20,M3 × 8 heat-set inserts,×25,cart,Robu ₹104,"8 used: four on the corner posts for the lid screws, four under the plate for the OLED bolts."
 Fasteners,21,"M3 female-female standoffs, 5 mm",×24,cart,Robu ₹184,Four lift the main board off the floor.
