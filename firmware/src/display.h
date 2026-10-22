@@ -40,12 +40,22 @@ static void drawUi() {
   u8g2.sendBuffer();
 }
 
+static void (*buddyDrawFn)() = nullptr;      // set by buddy.h
+static volatile bool uiBuddyView = false;     // true = show the face instead of the macro screen
+
 static void displayTask(void*) {
   static UiState last;
   memset(&last, 0xFF, sizeof last);                        // force first draw
+  bool wasBuddy = false;
   for (;;) {
-    if (memcmp(&last, &ui, sizeof ui) != 0) { memcpy(&last, &ui, sizeof ui); drawUi(); }  // redraw only on change
-    vTaskDelay(pdMS_TO_TICKS(40));
+    if (uiBuddyView && buddyDrawFn) {
+      buddyDrawFn(); u8g2.sendBuffer(); wasBuddy = true;   // face: animated, redraw every frame
+      vTaskDelay(pdMS_TO_TICKS(50));
+    } else {
+      if (wasBuddy) { memset(&last, 0xFF, sizeof last); wasBuddy = false; }
+      if (memcmp(&last, &ui, sizeof ui) != 0) { memcpy(&last, &ui, sizeof ui); drawUi(); }  // redraw only on change
+      vTaskDelay(pdMS_TO_TICKS(40));
+    }
   }
 }
 

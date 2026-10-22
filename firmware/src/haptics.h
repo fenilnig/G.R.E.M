@@ -23,3 +23,10 @@ static void hapticPlay(uint8_t effect) {   // see DRV2605 effect list (1..123)
 static void hapticKey()   { hapticPlay(1);  }   // strong click
 static void hapticDial()  { hapticPlay(24); }   // sharp tick (light)
 static void hapticMode()  { hapticPlay(10); }   // double click
+static void hapticAlarm() {            // three strong buzzes with pauses (timer finished)
+  if (!hapticsOk) return;
+  drv.setWaveform(0, 14); drv.setWaveform(1, 0x80 | 20);
+  drv.setWaveform(2, 14); drv.setWaveform(3, 0x80 | 20);
+  drv.setWaveform(4, 14); drv.setWaveform(5, 0);
+  drv.go();
+}

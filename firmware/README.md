@@ -15,7 +15,8 @@ Expect a few small fixes the first time you build. Do the stages in order and fi
 | 1     | `pio run -e stage1 -t upload`       | OLED shows the UI; pressing a key fills its square. `pio device monitor` prints "MCP23017 ... FOUND" and the I2C scan (0x20 = MCP23017, 0x5A = DRV2605L). |
 | 2     | `pio run -e stage2 -t upload`       | Turning a dial changes its counter (right side of OLED). Clockwise must go up - if not, set `ENC_REVERSE` true in `config.h`. |
 | 3     | `pio run -e stage3 -t upload`       | Keys send CapCut or After Effects shortcuts (open the app to test). Pair "G.R.E.M." in Bluetooth settings too. Hold the VOLUME dial push 1 s = switch CapCut / After Effects. Hold the BIG dial push 1 s = switch USB+BT / USB / BT. |
-| 4     | `pio run -e grem -t upload`         | Same as 3 plus haptic clicks. This is the final firmware. |
+| 4     | `pio run -e stage4 -t upload`       | Same as 3 plus haptic clicks. |
+| 5     | `pio run -e grem -t upload`         | FINAL: stage 4 + desk buddy (see below). |
 
 ## If something doesn't work
 - **"MCP23017 NOT FOUND"**: check SDA=GPIO8, SCL=GPIO9, 3V3, GND, and the A0/A1/A2 address pins on the breakout (all low = 0x20).
@@ -29,3 +30,10 @@ Expect a few small fixes the first time you build. Do the stages in order and fi
 - I2C: SDA 8, SCL 9 (MCP23017 0x20, DRV2605L 0x5A).
 - Dials A/B: small 1 = 4/5, small 2 = 6/7, small 3 = 15/16, small 4 = 17/18, BIG = 1/2.
 - MCP23017: keys 1-9 on pins GPA0..GPA7 + GPB0; dial push-switches on GPB1..GPB5 (small 1-4 then BIG).
+
+## Desk buddy (stage 5, no extra hardware)
+- Hold the VOLUME dial push 1 s to cycle profiles: CapCut -> After Effects -> BUDDY.
+- In CapCut / After Effects the OLED shows an animated face after 45 s with no input; it gets sleepy at 1 min, sleeps at 3 min, and wakes up surprised when you touch anything.
+- BUDDY profile = face + focus timer. Keys: 1 start/pause, 2 reset, 3 skip focus<->break, 4 pet (happy), 5 sleep, 6 startle. Small dial 2 = focus minutes (5-90), small dial 3 = break minutes (1-30). Big dial push = start/pause.
+- When a timer finishes the eyes shake and the motor buzzes three times; it then switches focus <-> break and waits for you to start the next one.
+- The buddy has no real-time clock (nothing in the hardware to keep time), so no clock face yet.
