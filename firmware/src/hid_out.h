@@ -27,7 +27,8 @@
 #define K_Z 0x1D
 #define K_D 0x07
 #define K_ENTER 0x28
-#define K_DEL 0x2A
+#define K_DEL 0x2A      // NOTE: this is BACKSPACE
+#define K_FWDDEL 0x4C   // the real Delete key
 #define K_SPACE 0x2C
 #define K_MINUS 0x2D
 #define K_EQUAL 0x2E
@@ -47,6 +48,9 @@
 #define C_VOL_UP 0xE9
 #define C_VOL_DOWN 0xEA
 #define C_MUTE 0xE2
+#define C_PLAY 0xCD
+#define C_NEXT 0xB5
+#define C_PREV 0xB6
 
 enum OutMode : uint8_t { OUT_BOTH = 0, OUT_USB = 1, OUT_BLE = 2 };
 static OutMode outMode = OUT_BOTH;

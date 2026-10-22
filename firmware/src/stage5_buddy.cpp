@@ -19,7 +19,7 @@ static void keyEvent(int k, bool pressed) {
   if (!pressed) return;
   buddyPoke();
   if (curProfile == 2) { buddyKey(k); hapticKey(); return; }
-  const Action& a = PROF().keys[k];
+  const ActionDef& a = PROF().keys[k];
   doAction(a);
   hapticKey();
   snprintf(ui.action, sizeof ui.action, "%s", a.name);
@@ -32,7 +32,7 @@ static void dialEvent(int d, int dir) {
     if (d == 1) buddyAdjustFocus(dir); else if (d == 2) buddyAdjustBreak(dir);
     hapticDial(); return;
   }
-  const Action& a = dir > 0 ? PROF().dials[d].cw : PROF().dials[d].ccw;
+  const ActionDef& a = dir > 0 ? PROF().dials[d].cw : PROF().dials[d].ccw;
   doAction(a);
   hapticDial();
   snprintf(ui.action, sizeof ui.action, "%s", a.name);
@@ -51,7 +51,7 @@ static void dialSwEvent(int d, bool pressed) {
     }
   } else if (!pressed) return;
   if (curProfile == 2) return;                    // BUDDY: other pushes do nothing
-  const Action& a = PROF().dials[d].push;
+  const ActionDef& a = PROF().dials[d].push;
   doAction(a);
   hapticKey();
   snprintf(ui.action, sizeof ui.action, "%s", a.name);

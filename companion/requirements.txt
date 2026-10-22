@@ -1,0 +1,4 @@
+pyserial>=3.5
+psutil>=5.9
+# optional (Windows now-playing + notification listener); the app runs without it:
+winsdk>=1.0.0b10 ; sys_platform == "win32"

@@ -15,7 +15,7 @@ static void showStatus() {
 static void keyEvent(int k, bool pressed) {
   ui.keyDown[k] = pressed;
   if (!pressed) return;
-  const Action& a = PROF().keys[k];
+  const ActionDef& a = PROF().keys[k];
   doAction(a);
   hapticKey();
   snprintf(ui.action, sizeof ui.action, "%s", a.name);
@@ -23,7 +23,7 @@ static void keyEvent(int k, bool pressed) {
 }
 static void dialEvent(int d, int dir) {
   ui.dialCount[d] += dir;
-  const Action& a = dir > 0 ? PROF().dials[d].cw : PROF().dials[d].ccw;
+  const ActionDef& a = dir > 0 ? PROF().dials[d].cw : PROF().dials[d].ccw;
   doAction(a);
   hapticDial();
   snprintf(ui.action, sizeof ui.action, "%s", a.name);
@@ -39,7 +39,7 @@ static void dialSwEvent(int d, bool pressed) {
       return;
     }
   } else if (!pressed) return;
-  const Action& a = PROF().dials[d].push;
+  const ActionDef& a = PROF().dials[d].push;
   doAction(a);
   hapticKey();
   snprintf(ui.action, sizeof ui.action, "%s", a.name);

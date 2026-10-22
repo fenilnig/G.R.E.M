@@ -16,7 +16,8 @@ Expect a few small fixes the first time you build. Do the stages in order and fi
 | 2     | `pio run -e stage2 -t upload`       | Turning a dial changes its counter (right side of OLED). Clockwise must go up - if not, set `ENC_REVERSE` true in `config.h`. |
 | 3     | `pio run -e stage3 -t upload`       | Keys send CapCut or After Effects shortcuts (open the app to test). Pair "G.R.E.M." in Bluetooth settings too. Hold the VOLUME dial push 1 s = switch CapCut / After Effects. Hold the BIG dial push 1 s = switch USB+BT / USB / BT. |
 | 4     | `pio run -e stage4 -t upload`       | Same as 3 plus haptic clicks. |
-| 5     | `pio run -e grem -t upload`         | FINAL: stage 4 + desk buddy (see below). |
+| 5     | `pio run -e stage5 -t upload`       | Stage 4 + desk buddy (see below). |
+| 6     | `pio run -e grem -t upload`         | FINAL: stage 5 + PC link, editable key map, clock/dash. |
 
 ## If something doesn't work
 - **"MCP23017 NOT FOUND"**: check SDA=GPIO8, SCL=GPIO9, 3V3, GND, and the A0/A1/A2 address pins on the breakout (all low = 0x20).
@@ -37,3 +38,12 @@ Expect a few small fixes the first time you build. Do the stages in order and fi
 - BUDDY profile = face + focus timer. Keys: 1 start/pause, 2 reset, 3 skip focus<->break, 4 pet (happy), 5 sleep, 6 startle. Small dial 2 = focus minutes (5-90), small dial 3 = break minutes (1-30). Big dial push = start/pause.
 - When a timer finishes the eyes shake and the motor buzzes three times; it then switches focus <-> break and waits for you to start the next one.
 - The buddy has no real-time clock (nothing in the hardware to keep time), so no clock face yet.
+
+## Stage 6: PC link (needs `GREM_companion`, run on the PC over USB)
+- Profiles now cycle (hold VOLUME dial push 1 s): CAPCUT -> AFTER EFFECTS -> BUDDY -> DASH.
+- DASH shows the clock/date, CPU/GPU/RAM load, GPU temperature and what is playing.
+- Notifications pop up for 6 s on BUDDY / DASH / the sleeping face; on the macro screens they show in the top bar. A finished render makes the buddy cheer on any screen.
+- With the companion running, CapCut/After Effects coming to the front switches the profile by itself.
+- Key map edits made in the web page are stored in the ESP32's flash (survive power-off). Use the web page's "Reset" to go back to defaults.
+- Without the PC the console works exactly as before; DASH shows "WAITING FOR PC".
+- Fix in this version: the "DELETE" key used Backspace by mistake; it now sends the real Delete key.

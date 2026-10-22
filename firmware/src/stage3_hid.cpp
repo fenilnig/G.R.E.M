@@ -14,14 +14,14 @@ static void showStatus() {
 static void keyEvent(int k, bool pressed) {
   ui.keyDown[k] = pressed;
   if (!pressed) return;
-  const Action& a = PROF().keys[k];
+  const ActionDef& a = PROF().keys[k];
   doAction(a);
   snprintf(ui.action, sizeof ui.action, "%s", a.name);
   snprintf(ui.detail, sizeof ui.detail, "key %d", k + 1);
 }
 static void dialEvent(int d, int dir) {
   ui.dialCount[d] += dir;
-  const Action& a = dir > 0 ? PROF().dials[d].cw : PROF().dials[d].ccw;
+  const ActionDef& a = dir > 0 ? PROF().dials[d].cw : PROF().dials[d].ccw;
   doAction(a);
   snprintf(ui.action, sizeof ui.action, "%s", a.name);
   snprintf(ui.detail, sizeof ui.detail, "%s", PROF().dials[d].label);
@@ -36,7 +36,7 @@ static void dialSwEvent(int d, bool pressed) {
       return;
     }
   } else if (!pressed) return;
-  const Action& a = PROF().dials[d].push;
+  const ActionDef& a = PROF().dials[d].push;
   doAction(a);
   snprintf(ui.action, sizeof ui.action, "%s", a.name);
   snprintf(ui.detail, sizeof ui.detail, "%s push", PROF().dials[d].label);

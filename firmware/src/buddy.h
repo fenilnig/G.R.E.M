@@ -17,6 +17,7 @@ struct BuddyState {
   volatile bool alarmFlag = false;
 };
 static BuddyState bd;
+static bool (*clockFn)(char*, size_t) = nullptr;   // set by companion.h: fills "HH:MM", false if time unknown
 
 static void buddyMood(BMood m, uint32_t ms) { bd.forced = m; bd.forcedUntil = millis() + ms; }
 static void buddyPoke() {                      // call on every key / dial event
@@ -113,6 +114,9 @@ static void drawBuddy() {
     u8g2.drawStr(4, 62, b);
     snprintf(b, sizeof b, "#%u", bd.sessions);
     u8g2.drawStr(256 - u8g2.getStrWidth(b) - 4, 62, b);
+  } else if (clockFn) {
+    char c[8];
+    if (clockFn(c, sizeof c)) { u8g2.setFont(u8g2_font_helvB10_tr); u8g2.drawStr(256 - u8g2.getStrWidth(c) - 4, 62, c); }
   }
 }
 static void buddyBegin() { bd.lastInput = millis(); buddyDrawFn = drawBuddy; }
