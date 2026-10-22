@@ -126,7 +126,7 @@ def export(obj, name):
     cq.exporters.export(obj, os.path.join(OUT, name + ".stl"), tolerance=0.02, angularTolerance=0.1)
 
 k_small = knob(24, 14, 24, "small")
-k_big = knob(38, 18, 36, "big")
+k_big = knob(48, 18, 44, "big")
 
 # ---------------- test tile ----------------
 tile = box(0, 100, 0, 66, 0, PT).edges("|Z").fillet(2.0)
