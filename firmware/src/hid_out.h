@@ -1,7 +1,6 @@
 #pragma once
 // Sends keyboard + media keys over USB (wired) and Bluetooth LE at the same time.
 #include <NimBLEDevice.h>
-#include <NimBLEHIDDevice.h>
 #include <USB.h>
 #include <USBHIDKeyboard.h>
 #include <USBHIDConsumerControl.h>
@@ -58,7 +57,6 @@ static const char* outModeName() { return outMode == OUT_BOTH ? "USB+BLE" : outM
 
 static USBHIDKeyboard usbKeys;
 static USBHIDConsumerControl usbCons;
-static NimBLEHIDDevice* bleHid = nullptr;
 static NimBLECharacteristic *bleKbd = nullptr, *bleCons = nullptr;
 static volatile bool bleConnected = false;
 static uint32_t releaseAt = 0;
@@ -83,6 +81,7 @@ class GremBleCb : public NimBLEServerCallbacks {
 };
 static GremBleCb bleCb;
 
+// The BLE HID service is built by hand (NimBLEHIDDevice's header clashes with the USB library's).
 static void hidBegin() {
   // ---- USB ----
   usbKeys.begin();
@@ -92,21 +91,40 @@ static void hidBegin() {
   USB.begin();
   // ---- Bluetooth LE ----
   NimBLEDevice::init("G.R.E.M.");
-  NimBLEDevice::setSecurityAuth(true, true, true);          // bonding, secure connections
+  NimBLEDevice::setSecurityAuth(true, true, true);           // bonding, secure connections
   NimBLEDevice::setSecurityIOCap(BLE_HS_IO_NO_INPUT_OUTPUT); // "Just Works" pairing
   NimBLEServer* server = NimBLEDevice::createServer();
   server->setCallbacks(&bleCb);
-  bleHid = new NimBLEHIDDevice(server);
-  bleKbd = bleHid->inputReport(1);
-  bleCons = bleHid->inputReport(2);
-  bleHid->manufacturer()->setValue("Fenil");
-  bleHid->pnp(0x02, 0x05AC, 0x820A, 0x0210);
-  bleHid->hidInfo(0x00, 0x01);
-  bleHid->reportMap((uint8_t*)HID_MAP, sizeof(HID_MAP));
-  bleHid->startServices();
+
+  NimBLEService* dis = server->createService((uint16_t)0x180A);              // Device Information
+  uint8_t pnp[7] = {0x02, 0xAC, 0x05, 0x0A, 0x82, 0x10, 0x02};               // USB-IF source, VID 0x05AC, PID 0x820A, ver 0x0210
+  dis->createCharacteristic((uint16_t)0x2A50, NIMBLE_PROPERTY::READ)->setValue(pnp, 7);
+  dis->createCharacteristic((uint16_t)0x2A29, NIMBLE_PROPERTY::READ)->setValue((const uint8_t*)"Fenil", 5);
+  dis->start();
+
+  NimBLEService* bat = server->createService((uint16_t)0x180F);              // Battery (fixed value for now)
+  uint8_t lvl = 100;
+  bat->createCharacteristic((uint16_t)0x2A19, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::NOTIFY)->setValue(&lvl, 1);
+  bat->start();
+
+  NimBLEService* hid = server->createService((uint16_t)0x1812);              // HID over GATT
+  uint8_t info[4] = {0x11, 0x01, 0x00, 0x01};                                 // HID 1.11, country 0, normally connectable
+  hid->createCharacteristic((uint16_t)0x2A4A, NIMBLE_PROPERTY::READ)->setValue(info, 4);
+  hid->createCharacteristic((uint16_t)0x2A4C, NIMBLE_PROPERTY::WRITE_NR);     // control point
+  hid->createCharacteristic((uint16_t)0x2A4B, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::READ_ENC)->setValue((uint8_t*)HID_MAP, sizeof(HID_MAP));
+  uint8_t proto = 1;                                                          // report protocol
+  hid->createCharacteristic((uint16_t)0x2A4E, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE_NR)->setValue(&proto, 1);
+  bleKbd = hid->createCharacteristic((uint16_t)0x2A4D, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::READ_ENC | NIMBLE_PROPERTY::NOTIFY);
+  uint8_t rr1[2] = {1, 1};                                                    // report id 1, input
+  bleKbd->createDescriptor((uint16_t)0x2908, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::READ_ENC)->setValue(rr1, 2);
+  bleCons = hid->createCharacteristic((uint16_t)0x2A4D, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::READ_ENC | NIMBLE_PROPERTY::NOTIFY);
+  uint8_t rr2[2] = {2, 1};                                                    // report id 2, input
+  bleCons->createDescriptor((uint16_t)0x2908, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::READ_ENC)->setValue(rr2, 2);
+  hid->start();
+
   NimBLEAdvertising* adv = server->getAdvertising();
-  adv->setAppearance(0x03C1);                                // keyboard
-  adv->addServiceUUID(bleHid->hidService()->getUUID());
+  adv->setAppearance(0x03C1);                                                 // keyboard
+  adv->addServiceUUID(NimBLEUUID((uint16_t)0x1812));
   adv->start();
 }
 
