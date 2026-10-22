@@ -17,8 +17,8 @@ STEP 2 - FULL PRINT
   grem_body.stl           x1   Floor on the bed. 140 x 140 x 62.
   grem_top_plate.stl      x1   UPSIDE DOWN: flat top face on the bed, bosses pointing up. No supports.
   grem_knob_small_x4.stl  x4   (ALREADY PRINTED - skip.) Dia 25 x 15. Flat top on the bed, bore facing up. (The file holds ONE knob.)
-  grem_knob_large_x1.stl  x1   Dia 48 x 18, diamond-knurled like the Ender 3 knob (48 diamonds around, flat top, smooth base ring). ALREADY IN PRINT ORIENTATION: top face down on the bed,
-                               open side up, no supports. Do not flip it. (grem_knob_large_x1_use.stl in STL/ is the as-mounted pose, not for printing.)
+  grem_knob_large_x1.stl  x1   Dia 48 x 18, fine straight-ridge knurl with a flat top and a round finger dimple (Ulanzi-style). ALREADY IN PRINT ORIENTATION: top face down on the bed,
+                               open side up, no supports. Do not flip it. The dimple prints as a small bridge, so its surface may be slightly rough. (grem_knob_large_x1_use.stl in STL/ is the as-mounted pose, not for printing.)
   Body: the 24 x 8 USB cutout and 21 x 15 rocker cutout bridge in the wall; add supports only if they sag.
 
 HARDWARE
