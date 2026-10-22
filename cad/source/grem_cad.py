@@ -135,7 +135,18 @@ def export(obj, name):
     cq.exporters.export(obj, os.path.join(OUT, name + ".stl"), tolerance=0.02, angularTolerance=0.1)
 
 k_small = knob(25, 15, 24, "small")
-k_big = knob(48, 18, 44, "big")
+def knob_big_standin():
+    """Same envelope and structure as the printable knurled knob (grem_knob_knurled.py) but without the pyramid texture:
+    skirt (peak radius 24 -> 23.3 mean), top cap, hub, 6 ribs, D-bore, pointer groove."""
+    R, RV, H, HK, TOP_T, R_IN = 24.0, 23.3, 18.0, 14.0, 4.0, 21.4
+    skirt = cylz(0, 0, 0, HK, 2 * (R - 0.35)).cut(cylz(0, 0, -1, HK + 1, 2 * R_IN))
+    cap = cylz(0, 0, H - TOP_T, H, 2 * RV).faces(">Z").edges().chamfer(1.0)
+    k = skirt.union(cap).union(cylz(0, 0, 0, H - TOP_T + 0.5, 14.4))
+    for i in range(6):
+        k = k.union(box(5, 22.0, -1.2, 1.2, 0, H - TOP_T + 0.5).rotate((0, 0, 0), (0, 0, 1), i * 60))
+    k = k.cut(cylz(0, 0, -1, 11.0, BORE_D).intersect(box(-4, BORE_FLAT, -4, 4, -1, 12)))
+    return k.cut(box(-0.6, 0.6, 8.0, 21.0, H - 0.6, H + 1))
+k_big = knob_big_standin()
 
 # ---------------- test tile ----------------
 tile = box(0, 100, 0, 66, 0, PT).edges("|Z").fillet(2.0)
