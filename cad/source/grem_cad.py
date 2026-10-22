@@ -125,7 +125,7 @@ def export(obj, name):
     cq.exporters.export(obj, os.path.join(OUT, name + ".step"))
     cq.exporters.export(obj, os.path.join(OUT, name + ".stl"), tolerance=0.02, angularTolerance=0.1)
 
-k_small = knob(24, 14, 24, "small")
+k_small = knob(25, 15, 24, "small")
 k_big = knob(48, 18, 44, "big")
 
 # ---------------- test tile ----------------

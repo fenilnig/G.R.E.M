@@ -29,7 +29,7 @@ STATUS (22 Oct, after the full-assembly CAD)
   [ ] Measure the MCP23017 breakout (model assumes 35 x 22), then add its mount
   [ ] Check the KY-040 shaft: round knurled or D-flat, and how far it sticks out above the nut (model assumes about 11.5 mm)
   [ ] Decide how the main board is fixed to its standoffs (depends on the standoffs that arrive)
-  [ ] Full print (body, plate, 4 small knobs, 1 large knob)
+  [ ] Full print (body, plate, 1 large 48 mm knob; 4 small knobs already printed)
   [ ] Bench tests: XL6009 to 5.0 V, coin motor on 3 V, OLED, keys
   [ ] Wiring, assembly, firmware
 

@@ -16,8 +16,8 @@ STEP 1 - PRINT THE TEST PIECES FIRST (about 1 hour), IN THE SAME PETG
 STEP 2 - FULL PRINT
   grem_body.stl           x1   Floor on the bed. 140 x 126 x 62.
   grem_top_plate.stl      x1   UPSIDE DOWN: flat top face on the bed, bosses pointing up. No supports.
-  grem_knob_small_x4.stl  x4   Dia 24 x 14. Flat top on the bed, bore facing up. (The file holds ONE knob.)
-  grem_knob_large_x1.stl  x1   Dia 38 x 18. Same orientation.
+  grem_knob_small_x4.stl  x4   Dia 25 x 15. Flat top on the bed, bore facing up. (The file holds ONE knob.)
+  grem_knob_large_x1.stl  x1   Dia 48 x 18 (enlarged Oct 23; the old 30 mm Ender knob was too small). Same orientation.
   Body: the 24 x 8 USB cutout and 21 x 15 rocker cutout bridge in the wall; add supports only if they sag.
 
 HARDWARE
